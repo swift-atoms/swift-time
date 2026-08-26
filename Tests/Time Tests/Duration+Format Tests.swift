@@ -1,5 +1,5 @@
 import Testing
-import Time_Primitives
+import Time
 
 @Suite
 struct `Duration Format Tests` {

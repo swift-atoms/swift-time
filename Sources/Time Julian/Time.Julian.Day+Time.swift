@@ -1,4 +1,4 @@
-public import Dimension_Primitives
+public import Dimension
 @_spi(Internal) internal import Time_Primitive
 
 extension Tagged where Tag == Coordinate.X<Time.Julian.Space>, Underlying == Double {

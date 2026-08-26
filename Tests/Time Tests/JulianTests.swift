@@ -1,6 +1,6 @@
-import Dimension_Primitives
+import Dimension
 import Testing
-import Time_Primitives
+import Time
 
 @testable import Time_Primitive
 

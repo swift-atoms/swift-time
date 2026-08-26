@@ -1,4 +1,4 @@
-public import Dimension_Primitives
+public import Dimension
 
 @available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
 extension Tagged where Tag == Coordinate.X<Time.Julian.Space>, Underlying == Double {

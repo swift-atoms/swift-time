@@ -1,5 +1,5 @@
-public import Format_Primitives
-import Formatter_Primitives
+public import Format
+import Formatter
 public import Time_Primitive
 
 extension Time {
@@ -164,7 +164,7 @@ extension Time.Format {
     }
 
     @usableFromInline
-    func numericFormatStyle(for value: Double) -> Format_Primitives.Format.Decimal {
+    func numericFormatStyle(for value: Double) -> Format.Format.Decimal {
         if let digits = precisionDigits {
             return .number.precision(digits)
         }

@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-time-primitives",
+    name: "swift-time",
     platforms: [
         .macOS(.v27),
         .iOS(.v27),
@@ -19,35 +19,35 @@ let package = Package(
         ),
 
         .library(
-            name: "Time Format Primitives",
-            targets: ["Time Format Primitives"]
+            name: "Time Format",
+            targets: ["Time Format"]
         ),
 
         .library(
-            name: "Time Julian Primitives",
-            targets: ["Time Julian Primitives"]
+            name: "Time Julian",
+            targets: ["Time Julian"]
         ),
 
         .library(
-            name: "Time Primitives",
-            targets: ["Time Primitives"]
+            name: "Time",
+            targets: ["Time"]
         ),
         .library(
-            name: "Time Primitives Test Support",
-            targets: ["Time Primitives Test Support"]
+            name: "Time Test Support",
+            targets: ["Time Test Support"]
         ),
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-primitives/swift-dimension-primitives.git",
+            url: "https://github.com/swift-molecules/swift-dimension.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-format-primitives.git",
+            url: "https://github.com/swift-molecules/swift-format.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-formatter-primitives.git",
+            url: "https://github.com/swift-molecules/swift-formatter.git",
             branch: "main"
         ),
     ],
@@ -59,46 +59,46 @@ let package = Package(
         ),
 
         .target(
-            name: "Time Format Primitives",
+            name: "Time Format",
             dependencies: [
                 "Time Primitive",
-                .product(name: "Format Primitives", package: "swift-format-primitives"),
-                .product(name: "Formatter Primitives", package: "swift-formatter-primitives"),
+                .product(name: "Format", package: "swift-format"),
+                .product(name: "Formatter", package: "swift-formatter"),
             ]
         ),
 
         .target(
-            name: "Time Julian Primitives",
+            name: "Time Julian",
             dependencies: [
                 "Time Primitive",
-                .product(name: "Dimension Primitives", package: "swift-dimension-primitives"),
+                .product(name: "Dimension", package: "swift-dimension"),
             ]
         ),
 
         .target(
-            name: "Time Primitives",
+            name: "Time",
             dependencies: [
                 "Time Primitive",
-                "Time Format Primitives",
-                "Time Julian Primitives",
+                "Time Format",
+                "Time Julian",
             ]
         ),
 
         .testTarget(
-            name: "Time Primitives Tests",
+            name: "Time Tests",
             dependencies: [
                 "Time Primitive",
-                "Time Primitives",
+                "Time",
             ]
         ),
 
         .target(
-            name: "Time Primitives Test Support",
+            name: "Time Test Support",
             dependencies: [
-                "Time Primitives",
+                "Time",
                 .product(
-                    name: "Dimension Primitives Test Support",
-                    package: "swift-dimension-primitives"
+                    name: "Dimension Test Support",
+                    package: "swift-dimension"
                 ),
             ],
             path: "Tests/Support"

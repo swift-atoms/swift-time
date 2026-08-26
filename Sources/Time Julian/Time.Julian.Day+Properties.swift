@@ -1,4 +1,4 @@
-public import Dimension_Primitives
+public import Dimension
 
 extension Tagged where Tag == Coordinate.X<Time.Julian.Space>, Underlying == Double {
 
