@@ -12,96 +12,39 @@ let package = Package(
         .visionOS(.v27),
     ],
     products: [
-
-        .library(
-            name: "Time Primitive",
-            targets: ["Time Primitive"]
-        ),
-
-        .library(
-            name: "Time Format",
-            targets: ["Time Format"]
-        ),
-
-        .library(
-            name: "Time Julian",
-            targets: ["Time Julian"]
-        ),
-
         .library(
             name: "Time",
             targets: ["Time"]
         ),
         .library(
-            name: "Time Test Support",
-            targets: ["Time Test Support"]
+            name: "Time Standard Library Integration",
+            targets: ["Time Standard Library Integration"]
+        ),
+        .library(
+            name: "Time Apple Foundation Integration",
+            targets: ["Time Apple Foundation Integration"]
         ),
     ],
-    dependencies: [
-        .package(
-            url: "https://github.com/swift-molecules/swift-dimension.git",
-            branch: "main"
-        ),
-        .package(
-            url: "https://github.com/swift-molecules/swift-format.git",
-            branch: "main"
-        ),
-        .package(
-            url: "https://github.com/swift-molecules/swift-formatter.git",
-            branch: "main"
-        ),
-    ],
+    dependencies: [],
     targets: [
-
-        .target(
-            name: "Time Primitive",
-            dependencies: []
-        ),
-
-        .target(
-            name: "Time Format",
-            dependencies: [
-                "Time Primitive",
-                .product(name: "Format", package: "swift-format"),
-                .product(name: "Formatter", package: "swift-formatter"),
-            ]
-        ),
-
-        .target(
-            name: "Time Julian",
-            dependencies: [
-                "Time Primitive",
-                .product(name: "Dimension", package: "swift-dimension"),
-            ]
-        ),
-
         .target(
             name: "Time",
+            dependencies: []
+        ),
+        .target(
+            name: "Time Standard Library Integration",
+            dependencies: ["Time"]
+        ),
+        .target(
+            name: "Time Apple Foundation Integration",
             dependencies: [
-                "Time Primitive",
-                "Time Format",
-                "Time Julian",
+                "Time",
+                "Time Standard Library Integration",
             ]
         ),
-
         .testTarget(
             name: "Time Tests",
-            dependencies: [
-                "Time Primitive",
-                "Time",
-            ]
-        ),
-
-        .target(
-            name: "Time Test Support",
-            dependencies: [
-                "Time",
-                .product(
-                    name: "Dimension Test Support",
-                    package: "swift-dimension"
-                ),
-            ],
-            path: "Tests/Support"
+            dependencies: ["Time"]
         ),
     ],
     swiftLanguageModes: [.v6]

@@ -1,3 +1,5 @@
+public import Time
+
 extension Swift.Duration {
 
     public static func seconds(_ value: Double) -> Duration {
