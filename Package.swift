@@ -14,21 +14,6 @@ let package = Package(
     products: [
 
         .library(
-            name: "Time Primitive",
-            targets: ["Time Primitive"]
-        ),
-
-        .library(
-            name: "Time Format",
-            targets: ["Time Format"]
-        ),
-
-        .library(
-            name: "Time Julian",
-            targets: ["Time Julian"]
-        ),
-
-        .library(
             name: "Time",
             targets: ["Time"]
         ),
@@ -37,69 +22,25 @@ let package = Package(
             targets: ["Time Test Support"]
         ),
     ],
-    dependencies: [
-        .package(
-            url: "https://github.com/swift-molecules/swift-dimension.git",
-            branch: "main"
-        ),
-        .package(
-            url: "https://github.com/swift-molecules/swift-format.git",
-            branch: "main"
-        ),
-        .package(
-            url: "https://github.com/swift-molecules/swift-formatter.git",
-            branch: "main"
-        ),
-    ],
+    dependencies: [],
     targets: [
 
         .target(
-            name: "Time Primitive",
-            dependencies: []
-        ),
-
-        .target(
-            name: "Time Format",
-            dependencies: [
-                "Time Primitive",
-                .product(name: "Format", package: "swift-format"),
-                .product(name: "Formatter", package: "swift-formatter"),
-            ]
-        ),
-
-        .target(
-            name: "Time Julian",
-            dependencies: [
-                "Time Primitive",
-                .product(name: "Dimension", package: "swift-dimension"),
-            ]
-        ),
-
-        .target(
             name: "Time",
-            dependencies: [
-                "Time Primitive",
-                "Time Format",
-                "Time Julian",
-            ]
+            dependencies: []
         ),
 
         .testTarget(
             name: "Time Tests",
             dependencies: [
-                "Time Primitive",
-                "Time",
+                .target(name: "Time"),
             ]
         ),
 
         .target(
             name: "Time Test Support",
             dependencies: [
-                "Time",
-                .product(
-                    name: "Dimension Test Support",
-                    package: "swift-dimension"
-                ),
+                .target(name: "Time"),
             ],
             path: "Tests/Support"
         ),

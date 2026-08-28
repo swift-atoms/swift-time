@@ -1,8 +1,8 @@
-# swift-time
+# Time
 
 ![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
 
-Calendar and timeline value types for Swift — absolute UTC `Time` with nanosecond precision, timeline `Instant` arithmetic, validated calendar components (year through yoctosecond), the Gregorian and Julian calendars, and duration formatting, with zero platform dependencies.
+Calendar and timeline value types for Swift — absolute UTC `Time` with nanosecond precision, timeline `Instant` arithmetic, validated calendar components (year through yoctosecond), and the Gregorian calendar, with zero platform dependencies.
 
 ---
 
@@ -41,7 +41,7 @@ let gps = Time.Epoch.gps                // 1980-01-06
 print(unix.referenceDate.year)          // 1970
 ```
 
-For astronomy, `Time.Julian.Day` is a phantom-typed coordinate with affine arithmetic — a Julian Day minus a Julian Day is an `Offset`, not another Day:
+The separate `swift-time-dimension` package provides `Time.Julian.Day` and `Time.Julian.Offset`:
 
 ```swift
 import Time_Julian
@@ -50,7 +50,7 @@ let jd = Time.Julian.Day(time)          // continuous day count
 let mjd = jd.modified                   // Modified Julian Day
 ```
 
-Durations format themselves with automatic unit selection:
+The separate `swift-time-format` package provides automatic duration formatting:
 
 ```swift
 import Time_Format
@@ -66,7 +66,7 @@ Duration.milliseconds(1500).formatted(.duration.precision(2))  // "1.50 s"
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-molecules/swift-time.git", branch: "main")
+    .package(url: "https://github.com/swift-atoms/swift-time.git", branch: "main")
 ]
 ```
 
@@ -85,16 +85,15 @@ Requires Swift 6.3.1 and macOS 26 / iOS 26 / tvOS 26 / watchOS 26 / visionOS 26 
 
 ## Architecture
 
-The umbrella product `Time` re-exports four targets. Import the umbrella for everything, or a single target to keep dependencies minimal.
+The atom contains only the dependency-free Time domain. Cross-domain behavior is provided by focused molecule packages.
 
-| Product | Import | When to import |
-|---------|--------|----------------|
-| `Time` | `Time` | Everything below, via one umbrella import. |
-| `Time Primitive` | `Time_Primitive` | The `Time` namespace, `Instant`, the calendar/timeline value types, epochs, and the Gregorian calendar. Zero external dependencies. |
-| `Time Format` | `Time_Format` | `Duration.formatted(_:)` and `Time.Format` (auto-unit duration strings). Adds the formatting dependencies. |
-| `Time Julian` | `Time_Julian` | `Time.Julian.Day` / `Time.Julian.Offset` and their conversions. Adds the dimension dependency. |
+| Package | Product | Import | Purpose |
+|---------|---------|--------|---------|
+| `swift-time` | `Time` | `Time` | `Time`, `Instant`, calendar/timeline values, epochs, and the Gregorian calendar. |
+| `swift-time-format` | `Time Format` | `Time_Format` | `Duration.formatted(_:)` and `Time.Format`. |
+| `swift-time-dimension` | `Time Dimension` | `Time_Dimension` | `Time.Julian.Day`, `Time.Julian.Offset`, and conversions. |
 
-The core `Time Primitive` target imports no other Swift packages and uses no Foundation types — distinct calendar (`Time`) and timeline (`Instant`) representations stay distinct, rather than being conflated into a single `Date`.
+The `Time` target imports no other Swift packages and uses no Foundation types — distinct calendar (`Time`) and timeline (`Instant`) representations stay distinct, rather than being conflated into a single `Date`.
 
 ---
 
@@ -108,7 +107,7 @@ The core `Time Primitive` target imports no other Swift packages and uses no Fou
 | iOS / tvOS / watchOS / visionOS | Supported |
 | Swift Embedded | Partial (value types; `Codable` conformances excluded) |
 
-Under Embedded Swift the calendar/timeline value types, arithmetic, epochs, and Julian conversions are available. The `Codable` conformances on `Time`, `Instant`, and `Time.Timezone.Offset` are excluded under Embedded.
+Under Embedded Swift the calendar/timeline value types, arithmetic, and epochs are available. The `Codable` conformances on `Time`, `Instant`, and `Time.Timezone.Offset` are excluded under Embedded.
 
 ---
 

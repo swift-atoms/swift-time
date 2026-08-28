@@ -2,7 +2,7 @@ import Foundation
 import Testing
 import Time
 
-@testable import Time_Primitive
+@testable import Time
 
 @Suite
 struct `Time vs Foundation Comparison Tests` {
