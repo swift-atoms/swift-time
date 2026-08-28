@@ -1,7 +1,7 @@
 import Foundation
 import Testing
 
-@testable import Time
+@testable import Time_Primitive
 
 extension Time.Epoch.Conversion {
     @Suite

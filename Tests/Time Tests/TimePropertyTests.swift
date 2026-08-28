@@ -1,7 +1,8 @@
 import Foundation
 import Testing
+import Time
 
-@testable import Time
+@testable import Time_Primitive
 
 @Suite
 struct `Time Property-Based Tests` {

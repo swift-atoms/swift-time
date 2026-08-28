@@ -1,6 +1,7 @@
 import Testing
+import Time
 
-@testable import Time
+@testable import Time_Primitive
 
 @Suite
 struct `Time Exhaustive Tests` {

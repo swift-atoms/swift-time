@@ -1,6 +1,6 @@
 import Testing
 
-@testable import Time
+@testable import Time_Primitive
 
 @Suite
 struct `Easter Tests` {
