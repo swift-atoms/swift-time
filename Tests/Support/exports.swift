@@ -1,2 +1,2 @@
-@_exported public import Dimension_Primitives_Test_Support
-@_exported public import Time_Primitives
+@_exported public import Dimension_Test_Support
+@_exported public import Time
