@@ -1,72 +1,61 @@
-extension Time.Timezone {
+import Tagged
+import Polarity
+import Magnitude
+public import Affine
+public import Difference
+internal import Cardinal
 
-    public struct Offset {
+extension Affine.Translation: @retroactive CustomStringConvertible where Domain == Time.Second {}
 
-        public let seconds: Int
+extension Affine.Translation where Domain == Time.Second {
+    public static var utc: Self { .identity }
 
-        public init(seconds: Int) {
-            self.seconds = seconds
-        }
-
+    public static func seconds(_ seconds: Difference) -> Self {
+        Self(offset: Time.Second.offset(seconds))
     }
-}
 
-extension Time.Timezone.Offset {
+    public static func seconds(_ seconds: Int) -> Self {
+        .seconds(Difference(seconds))
+    }
 
-    public static let utc = Self(seconds: 0)
+    /// Applies the hour sign to an unsigned minute component. With zero hours,
+    /// a negative minute component can express a negative subhour offset.
+    public static func hours(
+        _ hours: Int, minutes: Int = 0
+    ) throws(Difference.Error) -> Self {
+        let value = Int128(hours) * Int128(Time.Conversion.secondsPerHour)
+            + (hours < 0 ? -1 : 1) * Int128(minutes) * Int128(Time.Conversion.secondsPerMinute)
+        guard let magnitude = UInt(exactly: value.magnitude) else { throw .overflow }
+        return .seconds(Difference(
+            polarity: value < 0 ? .negative : .positive,
+            magnitude: Difference.Magnitude(Cardinal(magnitude))
+        ))
+    }
+
+    public var isUTC: Bool { offset.underlying == .zero }
 
     public var hours: Int {
-        seconds / Time.Conversion.secondsPerHour
+        let value = offset.underlying
+        let magnitude = value.magnitude.value.rawValue / UInt(Time.Conversion.secondsPerHour)
+        return value.polarity == .negative ? -Int(magnitude) : Int(magnitude)
     }
 
     public var minutes: Int {
-        abs(seconds % Time.Conversion.secondsPerHour)
-            / Time.Conversion.secondsPerMinute
+        Int(offset.underlying.magnitude.value.rawValue % UInt(Time.Conversion.secondsPerHour)
+            / UInt(Time.Conversion.secondsPerMinute))
     }
 
-    public var isUTC: Bool {
-        seconds == 0
-    }
-}
-
-extension Time.Timezone.Offset: CustomStringConvertible {
-
+    /// Retains seconds when the fixed offset is not an integral number of minutes.
     public var description: String {
-        if seconds == 0 {
-            return "+00:00"
-        }
-
-        let sign = seconds >= 0 ? "+" : "-"
-        let absHours = abs(hours)
-        let absMinutes = minutes
-
-        let hourStr = absHours < 10 ? "0\(absHours)" : "\(absHours)"
-        let minStr = absMinutes < 10 ? "0\(absMinutes)" : "\(absMinutes)"
-
-        return "\(sign)\(hourStr):\(minStr)"
-    }
-}
-
-extension Time.Timezone.Offset: Comparable {
-
-    public static func < (lhs: Time.Timezone.Offset, rhs: Time.Timezone.Offset) -> Bool {
-        lhs.seconds < rhs.seconds
-    }
-}
-
-#if !hasFeature(Embedded)
-    extension Time.Timezone.Offset: Codable {}
-#endif
-
-extension Time.Timezone.Offset: Sendable {}
-extension Time.Timezone.Offset: Equatable {}
-extension Time.Timezone.Offset: Hashable {}
-
-extension Time.Timezone.Offset {
-    public init(hours: Int, minutes: Int = 0) {
-        let sign = hours < 0 ? -1 : 1
-        self.seconds =
-            hours * Time.Conversion.secondsPerHour + sign * minutes
-            * Time.Conversion.secondsPerMinute
+        let value = offset.underlying
+        let magnitude = value.magnitude.value.rawValue
+        let hours = magnitude / UInt(Time.Conversion.secondsPerHour)
+        let minutes = magnitude % UInt(Time.Conversion.secondsPerHour)
+            / UInt(Time.Conversion.secondsPerMinute)
+        let seconds = magnitude % UInt(Time.Conversion.secondsPerMinute)
+        func padded(_ value: UInt) -> String { value < 10 ? "0\(value)" : "\(value)" }
+        let sign = value.polarity == .negative ? "-" : "+"
+        let base = "\(sign)\(padded(hours)):\(padded(minutes))"
+        return seconds == 0 ? base : "\(base):\(padded(seconds))"
     }
 }

@@ -24,3 +24,20 @@ extension Time.Epoch where Reference == Instant {
         instant - referenceDate
     }
 }
+
+
+extension Time.Epoch where Reference == Instant {
+    public func instant<Unit: Time.Unit>(
+        after quantity: Time.Quantity<Unit>
+    ) throws(Instant.Error) -> Instant {
+        try referenceDate.advanced(by: quantity)
+    }
+
+    public func instant(exactlyAfter duration: Duration) throws(Instant.Error) -> Instant {
+        try referenceDate.advanced(exactly: duration)
+    }
+
+    public func displacement(to instant: Instant) -> Time.Nanosecond.Quantity {
+        referenceDate.displacement(to: instant)
+    }
+}

@@ -22,18 +22,47 @@ let package = Package(
             targets: ["Time Test Support"]
         ),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/swift-atoms/swift-addition.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-magnitude.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-polarity.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-affine.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-cardinal.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-difference.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-division.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-rational.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-ratio.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-tagged.git", branch: "main"),
+    ],
     targets: [
 
         .target(
             name: "Time",
-            dependencies: []
+            dependencies: [
+                .product(name: "Addition", package: "swift-addition"),
+                .product(name: "Magnitude", package: "swift-magnitude"),
+                .product(name: "Polarity", package: "swift-polarity"),
+                .product(name: "Affine", package: "swift-affine"),
+                .product(name: "Cardinal", package: "swift-cardinal"),
+                .product(name: "Difference", package: "swift-difference"),
+                .product(name: "Division", package: "swift-division"),
+                .product(name: "Rational", package: "swift-rational"),
+                .product(name: "Ratio", package: "swift-ratio"),
+                .product(name: "Tagged", package: "swift-tagged")
+            ]
         ),
 
         .testTarget(
             name: "Time Tests",
             dependencies: [
                 .target(name: "Time"),
+                .product(name: "Affine", package: "swift-affine"),
+                .product(name: "Cardinal", package: "swift-cardinal"),
+                .product(name: "Difference", package: "swift-difference"),
+                .product(name: "Division", package: "swift-division"),
+                .product(name: "Rational", package: "swift-rational"),
+                .product(name: "Ratio", package: "swift-ratio"),
+                .product(name: "Tagged", package: "swift-tagged")
             ]
         ),
 

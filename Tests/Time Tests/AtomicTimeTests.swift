@@ -1,3 +1,6 @@
+import Affine
+import Tagged
+import Difference
 import Testing
 import Time
 
@@ -55,13 +58,13 @@ import Time
         ) == 123_456_789)
     }
 
-    @Test func offsetsHaveNoCalendarDependency() {
-        let offset = Time.Timezone.Offset(hours: -5, minutes: 30)
-        #expect(offset.seconds == -19_800)
+    @Test func offsetsHaveNoCalendarDependency() throws {
+        let offset = try Time.Zone.hours(-5, minutes: 30)
+        #expect(try offset.offset.underlying.intValue() == -19_800)
         #expect(offset.description == "-05:30")
         #expect(offset.hours == -5)
         #expect(offset.minutes == 30)
-        #expect(Time.Timezone.Offset.utc.isUTC)
+        #expect(Time.Zone.utc.isUTC)
         #expect(Instant.milliseconds(from: nil) == -1)
         #expect(Instant.milliseconds(from: .seconds(1)) == 1000)
         #expect(Duration.nanoseconds(500_000_000).inSeconds == 0.5)
