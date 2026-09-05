@@ -1,10 +1,10 @@
 extension Time {
 
-    public struct Yoctosecond: Sendable, Equatable, Hashable, Comparable {
+    public struct Yoctosecond {
 
         public let value: Int
 
-        public init(_ value: Int) throws(Self.Error) {
+        public init(_ value: Int) throws(Time.Yoctosecond.Error) {
             guard (0...999).contains(value) else {
                 throw Error.invalidYoctosecond(value)
             }
@@ -15,15 +15,8 @@ extension Time {
 
 extension Time.Yoctosecond {
 
-    public enum Error: Swift.Error, Sendable, Equatable {
-
-        case invalidYoctosecond(Int)
-    }
-}
-
-extension Time.Yoctosecond {
-
-    internal init(unchecked value: Int) {
+    @_spi(Internal)
+    public init(unchecked value: Int) {
         self.value = value
     }
 }
@@ -39,3 +32,8 @@ extension Time.Yoctosecond {
 
     public static let zero = Time.Yoctosecond(unchecked: 0)
 }
+
+extension Time.Yoctosecond: Sendable {}
+extension Time.Yoctosecond: Equatable {}
+extension Time.Yoctosecond: Hashable {}
+extension Time.Yoctosecond: Comparable {}

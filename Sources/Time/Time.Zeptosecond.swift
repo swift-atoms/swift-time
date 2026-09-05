@@ -1,10 +1,10 @@
 extension Time {
 
-    public struct Zeptosecond: Sendable, Equatable, Hashable, Comparable {
+    public struct Zeptosecond {
 
         public let value: Int
 
-        public init(_ value: Int) throws(Self.Error) {
+        public init(_ value: Int) throws(Time.Zeptosecond.Error) {
             guard (0...999).contains(value) else {
                 throw Error.invalidZeptosecond(value)
             }
@@ -15,15 +15,8 @@ extension Time {
 
 extension Time.Zeptosecond {
 
-    public enum Error: Swift.Error, Sendable, Equatable {
-
-        case invalidZeptosecond(Int)
-    }
-}
-
-extension Time.Zeptosecond {
-
-    internal init(unchecked value: Int) {
+    @_spi(Internal)
+    public init(unchecked value: Int) {
         self.value = value
     }
 }
@@ -39,3 +32,8 @@ extension Time.Zeptosecond {
 
     public static let zero = Time.Zeptosecond(unchecked: 0)
 }
+
+extension Time.Zeptosecond: Sendable {}
+extension Time.Zeptosecond: Equatable {}
+extension Time.Zeptosecond: Hashable {}
+extension Time.Zeptosecond: Comparable {}

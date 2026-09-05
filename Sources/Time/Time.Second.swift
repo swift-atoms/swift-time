@@ -1,10 +1,10 @@
 extension Time {
 
-    public struct Second: Sendable, Equatable, Hashable, Comparable {
+    public struct Second {
 
         public let value: Int
 
-        public init(_ value: Int) throws(Self.Error) {
+        public init(_ value: Int) throws(Time.Second.Error) {
             guard (0...60).contains(value) else {
                 throw Error.invalidSecond(value)
             }
@@ -15,15 +15,8 @@ extension Time {
 
 extension Time.Second {
 
-    public enum Error: Swift.Error, Sendable, Equatable {
-
-        case invalidSecond(Int)
-    }
-}
-
-extension Time.Second {
-
-    internal init(unchecked value: Int) {
+    @_spi(Internal)
+    public init(unchecked value: Int) {
         self.value = value
     }
 }
@@ -39,3 +32,8 @@ extension Time.Second {
 
     public static let zero = Time.Second(unchecked: 0)
 }
+
+extension Time.Second: Sendable {}
+extension Time.Second: Equatable {}
+extension Time.Second: Hashable {}
+extension Time.Second: Comparable {}

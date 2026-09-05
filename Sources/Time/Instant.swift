@@ -1,4 +1,4 @@
-public struct Instant: Sendable, Equatable, Hashable, Comparable {
+public struct Instant {
 
     public let secondsSinceUnixEpoch: Int64
 
@@ -7,20 +7,12 @@ public struct Instant: Sendable, Equatable, Hashable, Comparable {
     public init(
         secondsSinceUnixEpoch: Int64,
         nanosecondFraction: Int32 = 0
-    ) throws(Self.Error) {
+    ) throws(Instant.Error) {
         guard nanosecondFraction >= 0 && nanosecondFraction < 1_000_000_000 else {
             throw Error.nanosecondOutOfRange(nanosecondFraction)
         }
         self.secondsSinceUnixEpoch = secondsSinceUnixEpoch
         self.nanosecondFraction = nanosecondFraction
-    }
-}
-
-extension Instant {
-
-    public enum Error: Swift.Error, Sendable, Equatable {
-
-        case nanosecondOutOfRange(Int32)
     }
 }
 
@@ -45,14 +37,6 @@ extension Instant {
             secondsSinceUnixEpoch: secondsSinceUnixEpoch,
             nanosecondFraction: 0
         )
-    }
-}
-
-extension Instant {
-
-    public init(_ time: Time) {
-        self.secondsSinceUnixEpoch = Int64(time.secondsSinceEpoch)
-        self.nanosecondFraction = Int32(time.totalNanoseconds)
     }
 }
 
@@ -166,3 +150,8 @@ extension Instant: InstantProtocol {
 #if !hasFeature(Embedded)
     extension Instant: Codable {}
 #endif
+
+extension Instant: Sendable {}
+extension Instant: Equatable {}
+extension Instant: Hashable {}
+extension Instant: Comparable {}

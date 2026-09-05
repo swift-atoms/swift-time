@@ -1,10 +1,10 @@
 extension Time {
 
-    public struct Microsecond: Sendable, Equatable, Hashable, Comparable {
+    public struct Microsecond {
 
         public let value: Int
 
-        public init(_ value: Int) throws(Self.Error) {
+        public init(_ value: Int) throws(Time.Microsecond.Error) {
             guard (0...999).contains(value) else {
                 throw Error.invalidMicrosecond(value)
             }
@@ -15,15 +15,8 @@ extension Time {
 
 extension Time.Microsecond {
 
-    public enum Error: Swift.Error, Sendable, Equatable {
-
-        case invalidMicrosecond(Int)
-    }
-}
-
-extension Time.Microsecond {
-
-    internal init(unchecked value: Int) {
+    @_spi(Internal)
+    public init(unchecked value: Int) {
         self.value = value
     }
 }
@@ -39,3 +32,8 @@ extension Time.Microsecond {
 
     public static let zero = Time.Microsecond(unchecked: 0)
 }
+
+extension Time.Microsecond: Sendable {}
+extension Time.Microsecond: Equatable {}
+extension Time.Microsecond: Hashable {}
+extension Time.Microsecond: Comparable {}
