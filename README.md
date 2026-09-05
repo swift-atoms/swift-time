@@ -6,30 +6,26 @@ and reference origins. Calendar interpretation lives in `swift-calendar` and
 
 ## Quantities and components
 
-All eleven bounded component types remain: Hour, Minute, Second, Millisecond,
-Microsecond, Nanosecond, Picosecond, Femtosecond, Attosecond, Zeptosecond, and
-Yoctosecond. Their validation ranges are unchanged. A fractional component is a
-base-1000 digit; it is distinct from an unrestricted quantity in that unit.
-
-Each unit exposes three roles:
-
-- `Quantity` is `Tagged<Unit, Rational>` for exact signed fractional quantities.
-- `Count` is `Tagged<Unit, Cardinal>` for nonnegative whole-unit counts.
-- `Offset` is `Tagged<Unit, Difference>` for signed whole-unit displacements.
+Elapsed quantities use the unit type directly. Clock components name their containing
+unit: `Time.Day.Hour` (0...23), `Time.Hour.Minute` (0...59), and
+`Time.Minute.Second` (0...60). Fractional components continue through
+`Time.Second.Millisecond` to `Time.Zeptosecond.Yoctosecond`, each bounded to 0...999.
 
 ```swift
 import Time
-import Ratio
-import Rational
-import Tagged
 
-let minutes = Time.Minute.quantity(90)
-let hours = try Time.Conversion.quantity(minutes, to: Time.Hour.self)
-// hours.underlying == 3/2
-let total = try minutes.add.exact(minutes)
-let fine = try Time.Conversion.quantity(Time.Second.quantity(1), to: Time.Yoctosecond.self)
-// fine.underlying == 10^24, exactly
+let minutes = Time.Minute(90)
+let hours = try minutes.converted(to: Time.Hour.self) // exactly 3/2 hours
+let total = try minutes + Time.Minute(15)             // 105 minutes
+let fine = try Time.Second(1).converted(to: Time.Yoctosecond.self)
+let minute = try Time.Hour.Minute(45)                // a clock component
 ```
+
+Each quantity stores its exact signed `Rational` in `value`. Conversion, checked
+arithmetic, comparison, and validated Codable handling share the `Time.Unit`
+implementation. `Time.Quantity<Unit>` and `Unit.Quantity` alias the unit itself.
+`Count` remains `Tagged<Unit, Cardinal>` and `Offset` remains
+`Tagged<Unit, Difference>` for whole-unit counts and displacements.
 
 `Time.Conversion.ratio(from:to:)` composes unit scales. `quantity(_:to:)`
 preserves exact fractional values. `count(_:to:)` and `offset(_:to:)` require an
@@ -48,8 +44,8 @@ fraction. Quantities may be finer than an Instant's representable precision.
 
 ```swift
 let origin = Instant(secondsSinceUnixEpoch: 0)
-let next = try origin.advanced(by: Time.Nanosecond.quantity(1))
-let delta: Time.Nanosecond.Quantity = origin.displacement(to: next)
+let next = try origin + Time.Nanosecond(1)
+let delta: Time.Nanosecond = origin.displacement(to: next)
 let epoch = Time.Epoch(referenceDate: origin)
 let restored = try epoch.instant(after: delta)
 ```
@@ -59,8 +55,9 @@ let restored = try epoch.instant(after: delta)
 - `displacement(to:)` represents the full minimum-to-maximum Instant distance.
 - `duration(exactlyTo:)` uses Swift.Duration’s full attosecond representation,
   including the entire minimum-to-maximum Instant distance.
-- InstantProtocol and ordinary operators retain their nonthrowing signatures;
-  their precondition is exact representability. Use the checked APIs at boundaries.
+- Quantity operators (`instant + Time.Minute(90)` and quantity subtraction) throw
+  on precision loss or overflow. InstantProtocol and Swift.Duration operators retain
+  their nonthrowing signatures and exact-representability precondition.
   Duration integration reads its full-width attoseconds without narrowing through
   an Int64 seconds projection.
 - Codable decoding revalidates the fraction. The Unix seconds/fraction wire
@@ -78,8 +75,8 @@ conversion.
 `Time.Timezone` is another spelling of the same fixed translation.
 
 ```swift
-let zone = try Time.Zone.hours(-5, minutes: 30)
-let seconds = Time.Zone.seconds(-1)
+let zone = try Time.Zone(hours: -5, minutes: 30)
+let seconds = Time.Zone(seconds: -1)
 assert(seconds.description == "-00:00:01")
 ```
 
@@ -88,8 +85,8 @@ Formatting retains negative subhour offsets and any seconds remainder. Gregorian
 `instant(in:)` and `gregorian(in:)` supply calendar interpretation.
 
 The earlier `Time.Timezone.Offset(hours:minutes:)` construction becomes
-`Time.Zone.hours(_:minutes:)`; `Offset(seconds:)` becomes `Time.Second.offset(...)`
-when a displacement is needed or `Time.Zone.seconds(...)` when a translation is
+`Time.Zone(hours:minutes:)`; `Offset(seconds:)` becomes `Time.Second.offset(...)`
+when a displacement is needed or `Time.Zone(seconds: ...)` when a translation is
 needed. Zones expose their displacement through `offset`.
 
 Named geographical zones, transition databases, and leap-second tables are not

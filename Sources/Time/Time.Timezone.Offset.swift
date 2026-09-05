@@ -59,3 +59,13 @@ extension Affine.Translation where Domain == Time.Second {
         return seconds == 0 ? base : "\(base):\(padded(seconds))"
     }
 }
+
+extension Affine.Translation where Domain == Time.Second {
+    public init(hours: Int, minutes: Int = 0) throws(Difference.Error) {
+        self = try Self.hours(hours, minutes: minutes)
+    }
+
+    public init(seconds: Int) {
+        self = Self.seconds(seconds)
+    }
+}

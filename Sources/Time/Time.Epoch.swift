@@ -37,7 +37,7 @@ extension Time.Epoch where Reference == Instant {
         try referenceDate.advanced(exactly: duration)
     }
 
-    public func displacement(to instant: Instant) -> Time.Nanosecond.Quantity {
+    public func displacement(to instant: Instant) -> Time.Nanosecond {
         referenceDate.displacement(to: instant)
     }
 }

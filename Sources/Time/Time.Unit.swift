@@ -10,14 +10,14 @@ extension Time {
     /// A unit's seconds scale must remain stable and strictly positive.
     public protocol Unit {
         static var seconds: Ratio<Self, Time.Second> { get }
+        var value: Rational { get }
+        init(_ value: Rational)
     }
 
-    public typealias Quantity<Unit> = Tagged<Unit, Rational>
+    public typealias Quantity<Unit: Time.Unit> = Unit
     public typealias Count<Unit> = Tagged<Unit, Cardinal>
     public typealias Offset<Unit> = Tagged<Unit, Difference>
 
-    /// The uniform unit of 86,400 seconds; calendar-day advancement is separate.
-    public enum Day {}
 }
 
 extension Time.Unit {
@@ -25,13 +25,22 @@ extension Time.Unit {
     public typealias Count = Time.Count<Self>
     public typealias Offset = Time.Offset<Self>
 
-    public static func quantity(_ value: Int128) -> Quantity {
-        Quantity(Rational(value))
+    public init(_ value: Int128) { self.init(Rational(value)) }
+
+    public static var zero: Self { Self(Rational.zero) }
+
+    public func converted<To: Time.Unit>(to: To.Type) throws(Ratio::Failure) -> To {
+        try Time.Conversion.quantity(self, to: to)
     }
 
-    @_disfavoredOverload
-    public static func quantity(_ value: Rational) -> Quantity {
-        Quantity(value)
+    public static prefix func - (value: Self) -> Self { Self(-value.value) }
+
+    public static func + (lhs: Self, rhs: Self) throws(Rational.Error) -> Self {
+        Self(try lhs.value.adding(rhs.value))
+    }
+
+    public static func - (lhs: Self, rhs: Self) throws(Rational.Error) -> Self {
+        Self(try lhs.value.subtracting(rhs.value))
     }
 
     public static func count(_ value: Cardinal) -> Count {
@@ -59,7 +68,7 @@ extension Time.Conversion {
     public static func quantity<From: Time.Unit, To: Time.Unit>(
         _ value: Time.Quantity<From>, to: To.Type
     ) throws(Ratio::Failure) -> Time.Quantity<To> {
-        try ratio(from: From.self, to: To.self).applying(to: value)
+        To(try ratio(from: From.self, to: To.self).applying(to: value.value))
     }
 
     public static func count<From: Time.Unit, To: Time.Unit>(
@@ -85,3 +94,20 @@ extension Time.Conversion {
         catch { preconditionFailure("The temporal unit scale is representable") }
     }
 }
+
+
+extension Time.Unit {
+    public static func < (lhs: Self, rhs: Self) -> Bool { lhs.value < rhs.value }
+}
+
+#if !hasFeature(Embedded)
+extension Time.Unit {
+    public init(from decoder: any Decoder) throws {
+        self.init(try Rational(from: decoder))
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        try value.encode(to: encoder)
+    }
+}
+#endif

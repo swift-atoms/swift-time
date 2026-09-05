@@ -9,12 +9,22 @@ import Rational
 import Ratio
 
 @Suite struct Exact {
+    @Test func `quantity values preserve ordering arithmetic and rational encoding`() throws {
+        let fraction = try Rational(numerator: 3, denominator: 2, polarity: .negative)
+        let quantity = Time.Hour(fraction)
+        #expect(quantity < Time.Hour.zero)
+        #expect(try quantity - quantity == .zero)
+        let encoded = try JSONEncoder().encode(quantity)
+        #expect(try JSONDecoder().decode(Time.Hour.self, from: encoded) == quantity)
+        #expect(try JSONDecoder().decode(Rational.self, from: encoded) == fraction)
+    }
+
     @Test func `quantities preserve fractional and signed conversions`() throws {
-        let hours = try Time.Conversion.quantity(Time.Minute.quantity(90), to: Time.Hour.self)
-        #expect(hours.underlying == (try Rational(numerator: 3, denominator: 2)))
-        let minutes = try Time.Conversion.quantity(Time.Second.quantity(-1), to: Time.Minute.self)
-        #expect(minutes.underlying == (try Rational(numerator: 1, denominator: 60, polarity: .negative)))
-        #expect(try Time.Conversion.quantity(hours, to: Time.Minute.self) == Time.Minute.quantity(90))
+        let hours = try Time.Conversion.quantity(Time.Minute(90), to: Time.Hour.self)
+        #expect(hours.value == (try Rational(numerator: 3, denominator: 2)))
+        let minutes = try Time.Conversion.quantity(Time.Second(-1), to: Time.Minute.self)
+        #expect(minutes.value == (try Rational(numerator: 1, denominator: 60, polarity: .negative)))
+        #expect(try Time.Conversion.quantity(hours, to: Time.Minute.self) == Time.Minute(90))
     }
 
     @Test func `count and offset conversions preserve roles and report inexactness`() throws {
@@ -25,13 +35,13 @@ import Ratio
         #expect(throws: Ratio::Failure.inexact) {
             try Time.Conversion.offset(Time.Second.offset(Difference(1)), to: Time.Minute.self)
         }
-        let sum = try Time.Second.quantity(2).add.exact(Time.Second.quantity(3))
-        #expect(sum == Time.Second.quantity(5))
+        let sum = try Time.Second(2) + Time.Second(3)
+        #expect(sum == Time.Second(5))
     }
 
     @Test func `every fractional unit converts exactly in both directions`() throws {
         func roundTrip<Unit: Time.Unit>(_ unit: Unit.Type) throws {
-            let quantity = Time.Second.quantity(-123)
+            let quantity = Time.Second(-123)
             let converted = try Time.Conversion.quantity(quantity, to: unit)
             #expect(try Time.Conversion.quantity(converted, to: Time.Second.self) == quantity)
         }
@@ -43,9 +53,9 @@ import Ratio
         try roundTrip(Time.Attosecond.self)
         try roundTrip(Time.Zeptosecond.self)
         try roundTrip(Time.Yoctosecond.self)
-        let yoctoseconds = try Time.Conversion.quantity(Time.Second.quantity(1), to: Time.Yoctosecond.self)
-        #expect(yoctoseconds.underlying.numerator == 1_000_000_000_000_000_000_000_000)
-        #expect(yoctoseconds.underlying.denominator == 1)
+        let yoctoseconds = try Time.Conversion.quantity(Time.Second(1), to: Time.Yoctosecond.self)
+        #expect(yoctoseconds.value.numerator == 1_000_000_000_000_000_000_000_000)
+        #expect(yoctoseconds.value.denominator == 1)
     }
 
     @Test(arguments: [Int.min, -86_401, -1, 0, 1, 86_401, Int.max])
@@ -60,7 +70,7 @@ import Ratio
         let first = Instant(secondsSinceUnixEpoch: .min)
         let last = try Instant(secondsSinceUnixEpoch: .max, nanosecondFraction: 999_999_999)
         let displacement = first.displacement(to: last)
-        #expect(displacement.underlying.numerator == UInt128(UInt64.max) * 1_000_000_000 + 999_999_999)
+        #expect(displacement.value.numerator == UInt128(UInt64.max) * 1_000_000_000 + 999_999_999)
         #expect(try first.advanced(by: displacement) == last)
         #expect(try last.advanced(by: last.displacement(to: first)) == first)
         let duration = try first.duration(exactlyTo: last)
@@ -69,8 +79,8 @@ import Ratio
         #expect(try last.advanced(exactly: first.duration(exactlyTo: last) * -1) == first)
         #expect(last - duration == first)
         #expect(first + duration == last)
-        #expect(throws: Instant.Error.overflow) { try first.advanced(by: Time.Nanosecond.quantity(-1)) }
-        #expect(throws: Instant.Error.overflow) { try last.advanced(by: Time.Nanosecond.quantity(1)) }
+        #expect(throws: Instant.Error.overflow) { try first.advanced(by: Time.Nanosecond(-1)) }
+        #expect(throws: Instant.Error.overflow) { try last.advanced(by: Time.Nanosecond(1)) }
     }
 
     @Test func `instant rejects subnanosecond precision rather than truncating`() throws {
@@ -79,10 +89,10 @@ import Ratio
             try origin.advanced(exactly: Duration(secondsComponent: 0, attosecondsComponent: 1))
         }
         #expect(throws: Instant.Error.precision) {
-            try origin.advanced(by: Time.Picosecond.quantity(1))
+            try origin.advanced(by: Time.Picosecond(1))
         }
-        #expect(try origin.advanced(by: Time.Picosecond.quantity(1000)).nanosecondFraction == 1)
-        #expect(try origin.advanced(by: Time.Nanosecond.quantity(-1)) ==
+        #expect(try origin.advanced(by: Time.Picosecond(1000)).nanosecondFraction == 1)
+        #expect(try origin.advanced(by: Time.Nanosecond(-1)) ==
             Instant(secondsSinceUnixEpoch: -1, nanosecondFraction: 999_999_999))
         let picosecond = Duration.seconds(0.000000000001)
         #expect(picosecond.attoseconds == 1_000_000)
@@ -124,27 +134,31 @@ import Ratio
     }
 
     @Test func `custom unit scales must be positive and nonzero`() throws {
-        enum Zero: Time.Unit {
+        struct Zero: Time.Unit {
+            let value: Rational
+            init(_ value: Rational) { self.value = value }
             static var seconds: Ratio<Zero, Time.Second> { .zero }
         }
-        enum Negative: Time.Unit {
+        struct Negative: Time.Unit {
+            let value: Rational
+            init(_ value: Rational) { self.value = value }
             static var seconds: Ratio<Negative, Time.Second> { Ratio<Negative, Time.Second>(Int(-1)) }
         }
         #expect(throws: Ratio::Failure.zeroFactor) {
-            try Time.Conversion.quantity(Zero.quantity(1), to: Time.Second.self)
+            try Time.Conversion.quantity(Zero(1), to: Time.Second.self)
         }
         #expect(throws: Ratio::Failure.negativeFactor) {
-            try Time.Conversion.quantity(Time.Second.quantity(1), to: Negative.self)
+            try Time.Conversion.quantity(Time.Second(1), to: Negative.self)
         }
     }
 
     @Test func `epoch converts exact tagged displacements`() throws {
         let origin = try Instant(secondsSinceUnixEpoch: -1, nanosecondFraction: 999_999_999)
         let epoch = Time.Epoch(referenceDate: origin)
-        let next = try epoch.instant(after: Time.Nanosecond.quantity(2))
+        let next = try epoch.instant(after: Time.Nanosecond(2))
         #expect(next.secondsSinceUnixEpoch == 0)
         #expect(next.nanosecondFraction == 1)
-        #expect(epoch.displacement(to: next) == Time.Nanosecond.quantity(2))
+        #expect(epoch.displacement(to: next) == Time.Nanosecond(2))
     }
 
     @Test func `timeout millisecond projection saturates without intermediate overflow`() {

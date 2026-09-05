@@ -7,29 +7,29 @@ import Time
 @Suite struct AtomicTimeTests {
     @Test func everyFractionalComponentIsPreserved() throws {
         for value in [0, 1, 123, 999] {
-            #expect(try Time.Millisecond(value).value == value)
-            #expect(try Time.Microsecond(value).value == value)
-            #expect(try Time.Nanosecond(value).value == value)
-            #expect(try Time.Picosecond(value).value == value)
-            #expect(try Time.Femtosecond(value).value == value)
-            #expect(try Time.Attosecond(value).value == value)
-            #expect(try Time.Zeptosecond(value).value == value)
-            #expect(try Time.Yoctosecond(value).value == value)
+            #expect(try Time.Second.Millisecond(value).value == value)
+            #expect(try Time.Millisecond.Microsecond(value).value == value)
+            #expect(try Time.Microsecond.Nanosecond(value).value == value)
+            #expect(try Time.Nanosecond.Picosecond(value).value == value)
+            #expect(try Time.Picosecond.Femtosecond(value).value == value)
+            #expect(try Time.Femtosecond.Attosecond(value).value == value)
+            #expect(try Time.Attosecond.Zeptosecond(value).value == value)
+            #expect(try Time.Zeptosecond.Yoctosecond(value).value == value)
         }
         for value in [-1, 1000] {
-            #expect(throws: Time.Millisecond.Error.self) { try Time.Millisecond(value) }
-            #expect(throws: Time.Microsecond.Error.self) { try Time.Microsecond(value) }
-            #expect(throws: Time.Nanosecond.Error.self) { try Time.Nanosecond(value) }
-            #expect(throws: Time.Picosecond.Error.self) { try Time.Picosecond(value) }
-            #expect(throws: Time.Femtosecond.Error.self) { try Time.Femtosecond(value) }
-            #expect(throws: Time.Attosecond.Error.self) { try Time.Attosecond(value) }
-            #expect(throws: Time.Zeptosecond.Error.self) { try Time.Zeptosecond(value) }
-            #expect(throws: Time.Yoctosecond.Error.self) { try Time.Yoctosecond(value) }
+            #expect(throws: Time.Second.Millisecond.Error.self) { try Time.Second.Millisecond(value) }
+            #expect(throws: Time.Millisecond.Microsecond.Error.self) { try Time.Millisecond.Microsecond(value) }
+            #expect(throws: Time.Microsecond.Nanosecond.Error.self) { try Time.Microsecond.Nanosecond(value) }
+            #expect(throws: Time.Nanosecond.Picosecond.Error.self) { try Time.Nanosecond.Picosecond(value) }
+            #expect(throws: Time.Picosecond.Femtosecond.Error.self) { try Time.Picosecond.Femtosecond(value) }
+            #expect(throws: Time.Femtosecond.Attosecond.Error.self) { try Time.Femtosecond.Attosecond(value) }
+            #expect(throws: Time.Attosecond.Zeptosecond.Error.self) { try Time.Attosecond.Zeptosecond(value) }
+            #expect(throws: Time.Zeptosecond.Yoctosecond.Error.self) { try Time.Zeptosecond.Yoctosecond(value) }
         }
-        #expect(Time.Femtosecond.zero.value == 0)
-        #expect(Time.Attosecond.zero.value == 0)
-        #expect(Time.Zeptosecond.zero.value == 0)
-        #expect(Time.Yoctosecond.zero.value == 0)
+        #expect(Time.Picosecond.Femtosecond.zero.value == 0)
+        #expect(Time.Femtosecond.Attosecond.zero.value == 0)
+        #expect(Time.Attosecond.Zeptosecond.zero.value == 0)
+        #expect(Time.Zeptosecond.Yoctosecond.zero.value == 0)
     }
 
     @Test(arguments: [-172_801, -86_400, -1, 0, 1, 86_399, 86_400, 172_801])

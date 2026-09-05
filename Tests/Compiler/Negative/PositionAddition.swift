@@ -1,4 +1,4 @@
-// EXPECT-ERROR: binary operator|cannot convert|no exact matches
+// EXPECT-ERROR: operator function.*requires that 'Instant' conform to 'Time.Unit'
 import Time
 let origin = Instant(secondsSinceUnixEpoch: 0)
 let invalid = origin + origin

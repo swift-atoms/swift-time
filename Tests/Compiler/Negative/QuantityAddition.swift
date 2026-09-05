@@ -2,4 +2,4 @@
 import Time
 import Tagged
 import Rational
-let mixed = Time.Second.quantity(1) + Time.Minute.quantity(1)
+let mixed = try Time.Second(1) + Time.Minute(1)

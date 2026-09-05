@@ -14,13 +14,13 @@ extension Time.Conversion {
     public static var secondsPerHour: Int { constant(Time.Hour.self) }
     public static var secondsPerDay: Int { constant(Time.Day.self) }
 
-    public static func seconds(hour: Time.Hour, minute: Time.Minute, second: Time.Second) -> Int {
+    public static func seconds(hour: Time.Day.Hour, minute: Time.Hour.Minute, second: Time.Minute.Second) -> Int {
         hour.value * secondsPerHour + minute.value * secondsPerMinute + second.value
     }
 
     /// Euclidean division preserves the day carry for negative coordinates.
     public static func components(fromSeconds seconds: Int) -> (
-        days: Int, hour: Time.Hour, minute: Time.Minute, second: Time.Second
+        days: Int, hour: Time.Day.Hour, minute: Time.Hour.Minute, second: Time.Minute.Second
     ) {
         let split: (quotient: Int, remainder: Int)
         do { split = try Division.euclidean(seconds, by: secondsPerDay) }
@@ -29,9 +29,9 @@ extension Time.Conversion {
         let clock = split.remainder
         return (
             days,
-            Time.Hour(unchecked: clock / secondsPerHour),
-            Time.Minute(unchecked: (clock % secondsPerHour) / secondsPerMinute),
-            Time.Second(unchecked: clock % secondsPerMinute)
+            Time.Day.Hour(unchecked: clock / secondsPerHour),
+            Time.Hour.Minute(unchecked: (clock % secondsPerHour) / secondsPerMinute),
+            Time.Minute.Second(unchecked: clock % secondsPerMinute)
         )
     }
 }

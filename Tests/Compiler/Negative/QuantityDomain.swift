@@ -2,4 +2,4 @@
 import Time
 import Tagged
 import Rational
-let seconds: Time.Second.Quantity = Time.Minute.quantity(1)
+let seconds: Time.Second = Time.Minute(1)
