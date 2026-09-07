@@ -1,11 +1,9 @@
-public import Ratio
-
 extension Instant {
     public enum Error {
         case nanosecondOutOfRange(Int32)
         case precision
         case overflow
-        case conversion(Ratio::Failure)
+        case conversion(Time.Conversion.Error)
     }
 }
 

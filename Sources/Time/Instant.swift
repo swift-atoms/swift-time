@@ -1,6 +1,5 @@
 public import Affine
 internal import Rational
-internal import Ratio
 internal import Division
 internal import Addition
 
@@ -56,7 +55,7 @@ extension Instant {
         by quantity: Time.Quantity<Unit>
     ) throws(Instant.Error) -> Self {
         let converted: Time.Nanosecond
-        do throws(Ratio::Failure) {
+        do throws(Time.Conversion.Error) {
             converted = try Time.Conversion.quantity(quantity, to: Time.Nanosecond.self)
         } catch { throw .conversion(error) }
         let nanoseconds: Int128

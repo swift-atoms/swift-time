@@ -32,7 +32,7 @@ import Ratio
         #expect(seconds.underlying == Cardinal(120 as UInt))
         let offset = try Time.Conversion.offset(Time.Minute.offset(Difference(-2)), to: Time.Second.self)
         #expect(offset.underlying == Difference(-120))
-        #expect(throws: Ratio::Failure.inexact) {
+        #expect(throws: Time.Conversion.Error.inexact) {
             try Time.Conversion.offset(Time.Second.offset(Difference(1)), to: Time.Minute.self)
         }
         let sum = try Time.Second(2) + Time.Second(3)
@@ -144,10 +144,10 @@ import Ratio
             init(_ value: Rational) { self.value = value }
             static var seconds: Ratio<Negative, Time.Second> { Ratio<Negative, Time.Second>(Int(-1)) }
         }
-        #expect(throws: Ratio::Failure.zeroFactor) {
+        #expect(throws: Time.Conversion.Error.zeroFactor) {
             try Time.Conversion.quantity(Zero(1), to: Time.Second.self)
         }
-        #expect(throws: Ratio::Failure.negativeFactor) {
+        #expect(throws: Time.Conversion.Error.negativeFactor) {
             try Time.Conversion.quantity(Time.Second(1), to: Negative.self)
         }
     }

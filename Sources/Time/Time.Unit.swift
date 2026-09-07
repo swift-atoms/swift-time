@@ -27,7 +27,7 @@ extension Time.Unit {
 
     public static var zero: Self { Self(Rational.zero) }
 
-    public func converted<To: Time.Unit>(to: To.Type) throws(Ratio::Failure) -> To {
+    public func converted<To: Time.Unit>(to: To.Type) throws(Time.Conversion.Error) -> To {
         try Time.Conversion.quantity(self, to: to)
     }
 
@@ -53,32 +53,47 @@ extension Time.Unit {
 extension Time.Conversion {
     public static func ratio<From: Time.Unit, To: Time.Unit>(
         from: From.Type, to: To.Type
-    ) throws(Ratio::Failure) -> Ratio<From, To> {
+    ) throws(Time.Conversion.Error) -> Ratio<From, To> {
         let source = From.seconds
         let target = To.seconds
         guard source.polarity != nil && target.polarity != nil else { throw .zeroFactor }
         guard source.polarity == .positive && target.polarity == .positive else {
             throw .negativeFactor
         }
-        return try source.composed(with: target.inverted())
+        let inverse: Ratio<Time.Second, To>
+        do throws(Ratio<To, Time.Second>.Error) {
+            inverse = try target.inverted()
+        } catch { throw Error(error) }
+        do throws(Ratio<From, Time.Second>.Error) {
+            return try source.composed(with: inverse)
+        } catch { throw Error(error) }
     }
 
     public static func quantity<From: Time.Unit, To: Time.Unit>(
         _ value: Time.Quantity<From>, to: To.Type
-    ) throws(Ratio::Failure) -> Time.Quantity<To> {
-        To(try ratio(from: From.self, to: To.self).applying(to: value.value))
+    ) throws(Time.Conversion.Error) -> Time.Quantity<To> {
+        let factor = try ratio(from: From.self, to: To.self)
+        do throws(Ratio<From, To>.Error) {
+            return To(try factor.applying(to: value.value))
+        } catch { throw Error(error) }
     }
 
     public static func count<From: Time.Unit, To: Time.Unit>(
         _ value: Time.Count<From>, to: To.Type
-    ) throws(Ratio::Failure) -> Time.Count<To> {
-        try ratio(from: From.self, to: To.self).applying(to: value)
+    ) throws(Time.Conversion.Error) -> Time.Count<To> {
+        let factor = try ratio(from: From.self, to: To.self)
+        do throws(Ratio<From, To>.Error) {
+            return try factor.applying(to: value)
+        } catch { throw Error(error) }
     }
 
     public static func offset<From: Time.Unit, To: Time.Unit>(
         _ value: Time.Offset<From>, to: To.Type
-    ) throws(Ratio::Failure) -> Time.Offset<To> {
-        try ratio(from: From.self, to: To.self).applying(to: value)
+    ) throws(Time.Conversion.Error) -> Time.Offset<To> {
+        let factor = try ratio(from: From.self, to: To.self)
+        do throws(Ratio<From, To>.Error) {
+            return try factor.applying(to: value)
+        } catch { throw Error(error) }
     }
 }
 
