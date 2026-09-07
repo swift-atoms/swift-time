@@ -6,5 +6,4 @@ extension Time.Femtosecond.Attosecond {
     }
 }
 
-extension Time.Femtosecond.Attosecond.Error: Swift.Error {}
-extension Time.Femtosecond.Attosecond.Error: Equatable {}
+extension Time.Femtosecond.Attosecond.Error: Swift.Equatable {}

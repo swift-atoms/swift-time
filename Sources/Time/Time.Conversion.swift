@@ -36,7 +36,6 @@ extension Time.Conversion {
     }
 }
 
-
 extension Time.Conversion {
     private static func constant<Unit: Time.Unit>(_ unit: Unit.Type) -> Int {
         do { return Int(try unit.seconds.applying(to: 1 as Int128)) }

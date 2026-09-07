@@ -6,5 +6,4 @@ extension Time.Day.Hour {
     }
 }
 
-extension Time.Day.Hour.Error: Swift.Error {}
-extension Time.Day.Hour.Error: Equatable {}
+extension Time.Day.Hour.Error: Swift.Equatable {}

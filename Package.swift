@@ -13,8 +13,8 @@ let package = Package(
     ],
     products: [
         .library(name: "Time", targets: ["Time"]),
-        .library(name: "Time Standard Library Integration", targets: ["Time Standard Library Integration"]),
-        .library(name: "Time Foundation Library Integration", targets: ["Time Foundation Library Integration"]),
+
+        .library(name: "Time Foundation Integration", targets: ["Time Foundation Integration"]),
         .library(name: "Time Test Support", targets: ["Time Test Support"]),
     ],
     dependencies: [
@@ -48,20 +48,13 @@ let package = Package(
             ],
             path: "Sources/Time"
         ),
+
         .target(
-            name: "Time Standard Library Integration",
+            name: "Time Foundation Integration",
             dependencies: [
                 .target(name: "Time"),
             ],
-            path: "Sources/Time Standard Library Integration"
-        ),
-        .target(
-            name: "Time Foundation Library Integration",
-            dependencies: [
-                .target(name: "Time"),
-                .target(name: "Time Standard Library Integration"),
-            ],
-            path: "Sources/Time Foundation Library Integration"
+            path: "Sources/Time Foundation Integration"
         ),
         .target(
             name: "Time Test Support",
@@ -82,8 +75,7 @@ let package = Package(
                 .product(name: "Ratio", package: "swift-ratio"),
                 .product(name: "Tagged", package: "swift-tagged"),
                 .target(name: "Time Test Support"),
-                .target(name: "Time Standard Library Integration"),
-                .target(name: "Time Foundation Library Integration"),
+                .target(name: "Time Foundation Integration"),
             ],
             path: "Tests/Time Tests"
         ),

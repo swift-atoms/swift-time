@@ -5,8 +5,6 @@ public import Affine
 public import Difference
 internal import Cardinal
 
-extension Affine.Translation: @retroactive CustomStringConvertible where Domain == Time.Second {}
-
 extension Affine.Translation where Domain == Time.Second {
     public static var utc: Self { .identity }
 

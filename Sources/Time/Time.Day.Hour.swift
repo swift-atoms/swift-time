@@ -33,7 +33,8 @@ extension Time.Day.Hour {
     public static let zero = Time.Day.Hour(unchecked: 0)
 }
 
-extension Time.Day.Hour: Sendable {}
-extension Time.Day.Hour: Equatable {}
-extension Time.Day.Hour: Hashable {}
-extension Time.Day.Hour: Comparable {}
+extension Time.Day.Hour: Swift.Sendable {}
+
+extension Time.Day.Hour: Swift.Equatable {}
+
+extension Time.Day.Hour: Swift.Hashable {}

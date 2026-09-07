@@ -10,9 +10,11 @@ extension Time {
     }
 }
 
-extension Time.Epoch: Sendable where Reference: Sendable {}
-extension Time.Epoch: Equatable where Reference: Equatable {}
-extension Time.Epoch: Hashable where Reference: Hashable {}
+extension Time.Epoch: Swift.Sendable where Reference: Swift.Sendable {}
+
+extension Time.Epoch: Swift.Equatable where Reference: Swift.Equatable {}
+
+extension Time.Epoch: Swift.Hashable where Reference: Swift.Hashable {}
 
 extension Time.Epoch where Reference == Instant {
     /// Translation and displacement reuse Instant's arithmetic and precision contract.
@@ -24,7 +26,6 @@ extension Time.Epoch where Reference == Instant {
         instant - referenceDate
     }
 }
-
 
 extension Time.Epoch where Reference == Instant {
     public func instant<Unit: Time.Unit>(

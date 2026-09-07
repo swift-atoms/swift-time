@@ -70,7 +70,7 @@ import Ratio
         let first = Instant(secondsSinceUnixEpoch: .min)
         let last = try Instant(secondsSinceUnixEpoch: .max, nanosecondFraction: 999_999_999)
         let displacement = first.displacement(to: last)
-        #expect(displacement.value.numerator == UInt128(UInt64.max) * 1_000_000_000 + 999_999_999)
+        #expect(displacement.value.numerator == Integer(UInt64.max) * 1_000_000_000 + 999_999_999)
         #expect(try first.advanced(by: displacement) == last)
         #expect(try last.advanced(by: last.displacement(to: first)) == first)
         let duration = try first.duration(exactlyTo: last)

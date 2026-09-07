@@ -9,11 +9,12 @@ extension Time {
     }
 }
 
-extension Time.Minute: Equatable {}
-extension Time.Minute: Hashable {}
-extension Time.Minute: Sendable {}
+extension Time.Minute: Swift.Equatable {}
 
-extension Time.Minute: Comparable {}
+extension Time.Minute: Swift.Hashable {}
+
+extension Time.Minute: Swift.Sendable {}
+
 #if !hasFeature(Embedded)
-extension Time.Minute: Codable {}
+extension Time.Minute: Swift.Codable {}
 #endif

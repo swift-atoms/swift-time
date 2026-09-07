@@ -33,7 +33,8 @@ extension Time.Attosecond.Zeptosecond {
     public static let zero = Time.Attosecond.Zeptosecond(unchecked: 0)
 }
 
-extension Time.Attosecond.Zeptosecond: Sendable {}
-extension Time.Attosecond.Zeptosecond: Equatable {}
-extension Time.Attosecond.Zeptosecond: Hashable {}
-extension Time.Attosecond.Zeptosecond: Comparable {}
+extension Time.Attosecond.Zeptosecond: Swift.Sendable {}
+
+extension Time.Attosecond.Zeptosecond: Swift.Equatable {}
+
+extension Time.Attosecond.Zeptosecond: Swift.Hashable {}

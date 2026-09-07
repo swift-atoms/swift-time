@@ -84,7 +84,6 @@ extension Time.Conversion {
     }
 }
 
-
 extension Time.Conversion {
     /// Constructs the fixed, positive scale constants used by temporal units.
     static func scale<From, To>(
@@ -94,7 +93,6 @@ extension Time.Conversion {
         catch { preconditionFailure("The temporal unit scale is representable") }
     }
 }
-
 
 extension Time.Unit {
     public static func < (lhs: Self, rhs: Self) -> Bool { lhs.value < rhs.value }

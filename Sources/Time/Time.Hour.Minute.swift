@@ -33,7 +33,8 @@ extension Time.Hour.Minute {
     public static let zero = Time.Hour.Minute(unchecked: 0)
 }
 
-extension Time.Hour.Minute: Sendable {}
-extension Time.Hour.Minute: Equatable {}
-extension Time.Hour.Minute: Hashable {}
-extension Time.Hour.Minute: Comparable {}
+extension Time.Hour.Minute: Swift.Sendable {}
+
+extension Time.Hour.Minute: Swift.Equatable {}
+
+extension Time.Hour.Minute: Swift.Hashable {}

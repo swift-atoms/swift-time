@@ -9,5 +9,4 @@ extension Instant {
     }
 }
 
-extension Instant.Error: Swift.Error {}
-extension Instant.Error: Equatable {}
+extension Instant.Error: Swift.Equatable {}

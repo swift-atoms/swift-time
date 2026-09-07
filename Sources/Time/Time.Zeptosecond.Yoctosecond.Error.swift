@@ -6,5 +6,4 @@ extension Time.Zeptosecond.Yoctosecond {
     }
 }
 
-extension Time.Zeptosecond.Yoctosecond.Error: Swift.Error {}
-extension Time.Zeptosecond.Yoctosecond.Error: Equatable {}
+extension Time.Zeptosecond.Yoctosecond.Error: Swift.Equatable {}

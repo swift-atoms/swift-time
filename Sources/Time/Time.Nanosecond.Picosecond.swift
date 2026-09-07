@@ -33,7 +33,8 @@ extension Time.Nanosecond.Picosecond {
     public static let zero = Time.Nanosecond.Picosecond(unchecked: 0)
 }
 
-extension Time.Nanosecond.Picosecond: Sendable {}
-extension Time.Nanosecond.Picosecond: Equatable {}
-extension Time.Nanosecond.Picosecond: Hashable {}
-extension Time.Nanosecond.Picosecond: Comparable {}
+extension Time.Nanosecond.Picosecond: Swift.Sendable {}
+
+extension Time.Nanosecond.Picosecond: Swift.Equatable {}
+
+extension Time.Nanosecond.Picosecond: Swift.Hashable {}

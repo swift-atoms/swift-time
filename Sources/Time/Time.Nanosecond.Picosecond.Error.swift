@@ -6,5 +6,4 @@ extension Time.Nanosecond.Picosecond {
     }
 }
 
-extension Time.Nanosecond.Picosecond.Error: Swift.Error {}
-extension Time.Nanosecond.Picosecond.Error: Equatable {}
+extension Time.Nanosecond.Picosecond.Error: Swift.Equatable {}

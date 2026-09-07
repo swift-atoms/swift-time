@@ -33,7 +33,8 @@ extension Time.Picosecond.Femtosecond {
     public static let zero = Time.Picosecond.Femtosecond(unchecked: 0)
 }
 
-extension Time.Picosecond.Femtosecond: Sendable {}
-extension Time.Picosecond.Femtosecond: Equatable {}
-extension Time.Picosecond.Femtosecond: Hashable {}
-extension Time.Picosecond.Femtosecond: Comparable {}
+extension Time.Picosecond.Femtosecond: Swift.Sendable {}
+
+extension Time.Picosecond.Femtosecond: Swift.Equatable {}
+
+extension Time.Picosecond.Femtosecond: Swift.Hashable {}

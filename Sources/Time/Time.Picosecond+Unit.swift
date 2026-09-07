@@ -13,4 +13,3 @@ extension Time.Picosecond: Time.Unit {
 extension Ratio<Time.Picosecond, Time.Nanosecond> {
     static let `default`: Self = Time.Conversion.scale(numerator: 1, denominator: 1000)
 }
-    

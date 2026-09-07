@@ -33,7 +33,8 @@ extension Time.Minute.Second {
     public static let zero = Time.Minute.Second(unchecked: 0)
 }
 
-extension Time.Minute.Second: Sendable {}
-extension Time.Minute.Second: Equatable {}
-extension Time.Minute.Second: Hashable {}
-extension Time.Minute.Second: Comparable {}
+extension Time.Minute.Second: Swift.Sendable {}
+
+extension Time.Minute.Second: Swift.Equatable {}
+
+extension Time.Minute.Second: Swift.Hashable {}

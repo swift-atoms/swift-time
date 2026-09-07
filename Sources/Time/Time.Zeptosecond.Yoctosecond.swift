@@ -33,7 +33,8 @@ extension Time.Zeptosecond.Yoctosecond {
     public static let zero = Time.Zeptosecond.Yoctosecond(unchecked: 0)
 }
 
-extension Time.Zeptosecond.Yoctosecond: Sendable {}
-extension Time.Zeptosecond.Yoctosecond: Equatable {}
-extension Time.Zeptosecond.Yoctosecond: Hashable {}
-extension Time.Zeptosecond.Yoctosecond: Comparable {}
+extension Time.Zeptosecond.Yoctosecond: Swift.Sendable {}
+
+extension Time.Zeptosecond.Yoctosecond: Swift.Equatable {}
+
+extension Time.Zeptosecond.Yoctosecond: Swift.Hashable {}
