@@ -12,15 +12,10 @@ let package = Package(
         .visionOS(.v27),
     ],
     products: [
-
-        .library(
-            name: "Time",
-            targets: ["Time"]
-        ),
-        .library(
-            name: "Time Test Support",
-            targets: ["Time Test Support"]
-        ),
+        .library(name: "Time", targets: ["Time"]),
+        .library(name: "Time Standard Library Integration", targets: ["Time Standard Library Integration"]),
+        .library(name: "Time Foundation Library Integration", targets: ["Time Foundation Library Integration"]),
+        .library(name: "Time Test Support", targets: ["Time Test Support"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swift-atoms/swift-addition.git", branch: "main"),
@@ -36,7 +31,6 @@ let package = Package(
         .package(url: "https://github.com/swift-atoms/swift-standard-library-extensions.git", branch: "main"),
     ],
     targets: [
-
         .target(
             name: "Time",
             dependencies: [
@@ -50,10 +44,32 @@ let package = Package(
                 .product(name: "Rational", package: "swift-rational"),
                 .product(name: "Ratio", package: "swift-ratio"),
                 .product(name: "Tagged", package: "swift-tagged"),
-                .product(name: "Standard Library Extensions", package: "swift-standard-library-extensions")
-            ]
+                .product(name: "Standard Library Extensions", package: "swift-standard-library-extensions"),
+            ],
+            path: "Sources/Time"
         ),
-
+        .target(
+            name: "Time Standard Library Integration",
+            dependencies: [
+                .target(name: "Time"),
+            ],
+            path: "Sources/Time Standard Library Integration"
+        ),
+        .target(
+            name: "Time Foundation Library Integration",
+            dependencies: [
+                .target(name: "Time"),
+                .target(name: "Time Standard Library Integration"),
+            ],
+            path: "Sources/Time Foundation Library Integration"
+        ),
+        .target(
+            name: "Time Test Support",
+            dependencies: [
+                .target(name: "Time"),
+            ],
+            path: "Tests/Support"
+        ),
         .testTarget(
             name: "Time Tests",
             dependencies: [
@@ -64,23 +80,19 @@ let package = Package(
                 .product(name: "Division", package: "swift-division"),
                 .product(name: "Rational", package: "swift-rational"),
                 .product(name: "Ratio", package: "swift-ratio"),
-                .product(name: "Tagged", package: "swift-tagged")
-            ]
-        ),
-
-        .target(
-            name: "Time Test Support",
-            dependencies: [
-                .target(name: "Time"),
+                .product(name: "Tagged", package: "swift-tagged"),
+                .target(name: "Time Test Support"),
+                .target(name: "Time Standard Library Integration"),
+                .target(name: "Time Foundation Library Integration"),
             ],
-            path: "Tests/Support"
+            path: "Tests/Time Tests"
         ),
     ],
     swiftLanguageModes: [.v6]
 )
 
-for target in package.targets where ![.system, .binary, .plugin, .macro].contains(target.type) {
-    let ecosystem: [SwiftSetting] = [
+for target in package.targets {
+    target.swiftSettings = [
         .strictMemorySafety(),
         .enableUpcomingFeature("ExistentialAny"),
         .enableUpcomingFeature("InternalImportsByDefault"),
@@ -89,8 +101,4 @@ for target in package.targets where ![.system, .binary, .plugin, .macro].contain
         .enableExperimentalFeature("Lifetimes"),
         .enableUpcomingFeature("InferIsolatedConformances"),
     ]
-
-    let package: [SwiftSetting] = []
-
-    target.swiftSettings = (target.swiftSettings ?? []) + ecosystem + package
 }
