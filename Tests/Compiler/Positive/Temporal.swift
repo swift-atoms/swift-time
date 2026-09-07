@@ -6,6 +6,7 @@ import Difference
 import Affine
 
 let minutes = Time.Minute(90)
+let minutes2 = Time.Minute(90)
 let doubled: Time.Minute = try minutes + minutes
 let hours: Time.Hour = try Time.Conversion.quantity(doubled, to: Time.Hour.self)
 let zero = Instant(secondsSinceUnixEpoch: 0)
