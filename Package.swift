@@ -33,6 +33,7 @@ let package = Package(
         .package(url: "https://github.com/swift-atoms/swift-rational.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-ratio.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-tagged.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-standard-library-extensions.git", branch: "main"),
     ],
     targets: [
 
@@ -48,7 +49,8 @@ let package = Package(
                 .product(name: "Division", package: "swift-division"),
                 .product(name: "Rational", package: "swift-rational"),
                 .product(name: "Ratio", package: "swift-ratio"),
-                .product(name: "Tagged", package: "swift-tagged")
+                .product(name: "Tagged", package: "swift-tagged"),
+                .product(name: "Standard Library Extensions", package: "swift-standard-library-extensions")
             ]
         ),
 
