@@ -7,3 +7,5 @@ extension Time.Attosecond.Zeptosecond {
 }
 
 extension Time.Attosecond.Zeptosecond.Error: Swift.Equatable {}
+
+extension Time.Attosecond.Zeptosecond.Error: Swift.Error {}

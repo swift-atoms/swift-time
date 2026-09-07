@@ -4,8 +4,8 @@ import Difference
 import Testing
 import Time
 
-@Suite struct AtomicTimeTests {
-    @Test func everyFractionalComponentIsPreserved() throws {
+@Suite struct `Temporal components preserve their distinct roles` {
+    @Test func `every fractional component is preserved`() throws {
         for value in [0, 1, 123, 999] {
             #expect(try Time.Second.Millisecond(value).value == value)
             #expect(try Time.Millisecond.Microsecond(value).value == value)
@@ -33,7 +33,7 @@ import Time
     }
 
     @Test(arguments: [-172_801, -86_400, -1, 0, 1, 86_399, 86_400, 172_801])
-    func clockDivisionLaw(seconds: Int) {
+    func `clock division law`(seconds: Int) {
         let components = Time.Conversion.components(fromSeconds: seconds)
         let clock = Time.Conversion.seconds(
             hour: components.hour, minute: components.minute, second: components.second
@@ -42,7 +42,7 @@ import Time
         #expect((0..<Time.Conversion.secondsPerDay).contains(clock))
     }
 
-    @Test func instantTranslationAndEpochCoordinates() throws {
+    @Test func `instant translation and epoch coordinates`() throws {
         let origin = try Instant(secondsSinceUnixEpoch: -1, nanosecondFraction: 999_999_999)
         let epoch = Time.Epoch(referenceDate: origin)
         let displacement = Duration.nanoseconds(2)
@@ -58,7 +58,7 @@ import Time
         ) == 123_456_789)
     }
 
-    @Test func offsetsHaveNoCalendarDependency() throws {
+    @Test func `offsets have no calendar dependency`() throws {
         let offset = try Time.Zone.hours(-5, minutes: 30)
         #expect(try offset.offset.underlying.intValue() == -19_800)
         #expect(offset.description == "-05:30")

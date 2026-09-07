@@ -1,4 +1,3 @@
-/// Calendar-independent temporal components, reference origins and arithmetic.
 public enum Time {}
 
 extension Time {

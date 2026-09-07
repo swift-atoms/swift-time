@@ -6,8 +6,6 @@ public import Tagged
 internal import Polarity
 
 extension Time {
-    /// A scale for elapsed quantities, independently of a bounded clock component.
-    /// A unit's seconds scale must remain stable and strictly positive.
     public protocol Unit {
         static var seconds: Ratio<Self, Time.Second> { get }
         var value: Rational { get }
@@ -85,7 +83,6 @@ extension Time.Conversion {
 }
 
 extension Time.Conversion {
-    /// Constructs the fixed, positive scale constants used by temporal units.
     static func scale<From, To>(
         numerator: UInt128, denominator: UInt128 = 1
     ) -> Ratio<From, To> {

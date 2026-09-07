@@ -10,3 +10,5 @@ extension Instant {
 }
 
 extension Instant.Error: Swift.Equatable {}
+
+extension Instant.Error: Swift.Error {}

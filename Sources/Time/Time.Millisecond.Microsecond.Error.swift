@@ -7,3 +7,5 @@ extension Time.Millisecond.Microsecond {
 }
 
 extension Time.Millisecond.Microsecond.Error: Swift.Equatable {}
+
+extension Time.Millisecond.Microsecond.Error: Swift.Error {}

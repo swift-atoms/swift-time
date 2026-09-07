@@ -7,3 +7,5 @@ extension Time.Minute.Second {
 }
 
 extension Time.Minute.Second.Error: Swift.Equatable {}
+
+extension Time.Minute.Second.Error: Swift.Error {}

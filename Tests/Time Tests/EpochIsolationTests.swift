@@ -26,29 +26,28 @@ private func makeLocalEpoch() -> sending Time.Epoch<LocalReference> {
 
 private func requireSendable<T: Sendable>(_ value: T) {}
 
-@Suite struct EpochIsolationTests {
-    @Test func localConstructionDoesNotRequireTransferOrConformances() {
+@Suite struct `Epochs retain their reference ownership` {
+    @Test func `local construction does not require transfer or conformances`() {
         let reference = LocalReference(1)
         let epoch = Time.Epoch(referenceDate: reference)
-        // The initializer must not consume the reference's isolation region.
         reference.value = 2
         #expect(epoch.referenceDate === reference)
         #expect(epoch.referenceDate.value == 2)
     }
 
-    @Test func equalityIsIndependentOfHashability() {
+    @Test func `equality is independent of hashability`() {
         let a = Time.Epoch(referenceDate: EqualityOnly(value: 1))
         let b = Time.Epoch(referenceDate: EqualityOnly(value: 1))
         #expect(a == b)
     }
 
-    @Test func conditionalConformancesRemainAvailable() {
+    @Test func `conditional conformances remain available`() {
         let epoch = Time.Epoch(referenceDate: Instant(secondsSinceUnixEpoch: 0))
         requireSendable(epoch)
         #expect(Set([epoch, epoch]).count == 1)
     }
 
-    @Test func disconnectedNonSendableReferenceCanBeSentToAnActor() async {
+    @Test func `disconnected non sendable reference can be sent to an actor`() async {
         let receiver = EpochReceiver()
         let epoch = makeLocalEpoch()
         await receiver.store(epoch)

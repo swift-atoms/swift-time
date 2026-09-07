@@ -1,8 +1,6 @@
 import Ratio
 internal import Division
 
-/// Mixed-radix arithmetic for a uniform, 24-hour clock coordinate.
-/// A clock-coordinate day here is not a claim about elapsed civil-day length.
 extension Time {
     public enum Conversion {}
 }
@@ -18,7 +16,6 @@ extension Time.Conversion {
         hour.value * secondsPerHour + minute.value * secondsPerMinute + second.value
     }
 
-    /// Euclidean division preserves the day carry for negative coordinates.
     public static func components(fromSeconds seconds: Int) -> (
         days: Int, hour: Time.Day.Hour, minute: Time.Hour.Minute, second: Time.Minute.Second
     ) {

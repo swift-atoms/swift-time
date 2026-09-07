@@ -8,7 +8,7 @@ import Time
 import Rational
 import Ratio
 
-@Suite struct Exact {
+@Suite struct `Elapsed quantities preserve exact arithmetic` {
     @Test func `quantity values preserve ordering arithmetic and rational encoding`() throws {
         let fraction = try Rational(numerator: 3, denominator: 2, polarity: .negative)
         let quantity = Time.Hour(fraction)

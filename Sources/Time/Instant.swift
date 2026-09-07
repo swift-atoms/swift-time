@@ -4,7 +4,6 @@ internal import Ratio
 internal import Division
 internal import Addition
 
-/// A Unix timeline position with an exact nanosecond fraction.
 public struct Instant {
     public let position: Affine.Position<Time.Second>
     public let nanosecondFraction: Int32
@@ -47,14 +46,12 @@ extension Instant {
 }
 
 extension Instant {
-    /// The exact separation, including the full endpoint-to-endpoint range.
     public func displacement(to other: Self) -> Time.Nanosecond {
         let seconds = Int128(other.secondsSinceUnixEpoch) - Int128(secondsSinceUnixEpoch)
         let fraction = Int128(other.nanosecondFraction) - Int128(nanosecondFraction)
         return Time.Nanosecond(seconds * 1_000_000_000 + fraction)
     }
 
-    /// Rejects fractional nanoseconds and out-of-range timeline coordinates.
     public func advanced<Unit: Time.Unit>(
         by quantity: Time.Quantity<Unit>
     ) throws(Instant.Error) -> Self {
@@ -69,8 +66,6 @@ extension Instant {
             if error == .inexact { throw .precision }
             throw .overflow
         }
-        // Split before adding so even an Int128-sized displacement cannot overflow
-        // a temporary sum with the existing coordinate.
         let split: (quotient: Int128, remainder: Int128)
         do { split = try Division.euclidean(nanoseconds, by: 1_000_000_000) }
         catch { throw .overflow }
@@ -89,7 +84,6 @@ extension Instant {
         )
     }
 
-    /// Swift.Duration may represent subnanosecond values; these are never truncated.
     public func advanced(exactly duration: Duration) throws(Instant.Error) -> Self {
         let attoseconds = duration.attoseconds
         guard attoseconds % 1_000_000_000 == 0 else { throw .precision }
@@ -100,8 +94,6 @@ extension Instant {
         let nanoseconds: Int128
         do { nanoseconds = try displacement(to: other).value.integer(as: Int128.self) }
         catch { throw .overflow }
-        // Even the full Int64 seconds range with both endpoint fractions spans
-        // less than 2^65 seconds. Its attoseconds fit Swift.Duration's Int128.
         return Duration(attoseconds: nanoseconds * 1_000_000_000)
     }
 
@@ -113,7 +105,6 @@ extension Instant {
     public static func subtract(duration: Duration, from instant: Self) -> Self {
         let attoseconds = duration.attoseconds
         precondition(attoseconds % 1_000_000_000 == 0, "Instant arithmetic requires exact nanoseconds")
-        // Division first makes negation safe even for Duration's Int128 minimum.
         let displacement = -(attoseconds / 1_000_000_000)
         do { return try instant.advanced(by: Time.Nanosecond(displacement)) }
         catch { preconditionFailure("Instant subtraction requires a representable coordinate") }
@@ -129,11 +120,6 @@ extension Instant {
     public static func - (lhs: Self, rhs: Self) -> Duration { duration(from: rhs, to: lhs) }
 }
 
-extension Instant: InstantProtocol {
-    public typealias Duration = Swift.Duration
-    public func advanced(by duration: Duration) -> Self { self + duration }
-    public func duration(to other: Self) -> Duration { other - self }
-}
 
 extension Instant: Swift.Sendable {}
 

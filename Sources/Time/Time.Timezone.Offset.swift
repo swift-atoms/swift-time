@@ -16,8 +16,6 @@ extension Affine.Translation where Domain == Time.Second {
         .seconds(Difference(seconds))
     }
 
-    /// Applies the hour sign to an unsigned minute component. With zero hours,
-    /// a negative minute component can express a negative subhour offset.
     public static func hours(
         _ hours: Int, minutes: Int = 0
     ) throws(Difference.Error) -> Self {
@@ -43,7 +41,6 @@ extension Affine.Translation where Domain == Time.Second {
             / UInt(Time.Conversion.secondsPerMinute))
     }
 
-    /// Retains seconds when the fixed offset is not an integral number of minutes.
     public var description: String {
         let value = offset.underlying
         let magnitude = value.magnitude.value.rawValue

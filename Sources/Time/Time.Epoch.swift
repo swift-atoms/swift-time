@@ -1,6 +1,4 @@
 extension Time {
-    /// A chosen reference value. Its representation supplies its interpretation.
-    /// Calendar reference dates can be used without introducing a calendar dependency here.
     public struct Epoch<Reference> {
         public let referenceDate: Reference
 
@@ -17,7 +15,6 @@ extension Time.Epoch: Swift.Equatable where Reference: Swift.Equatable {}
 extension Time.Epoch: Swift.Hashable where Reference: Swift.Hashable {}
 
 extension Time.Epoch where Reference == Instant {
-    /// Translation and displacement reuse Instant's arithmetic and precision contract.
     public func instant(after duration: Duration) -> Instant {
         referenceDate + duration
     }
