@@ -33,7 +33,7 @@ import Time
     }
 
     @Test(arguments: [-172_801, -86_400, -1, 0, 1, 86_399, 86_400, 172_801])
-    func `clock division law`(seconds: Int) {
+    func `Dividing seconds yields whole days and a bounded remainder that reconstruct the input`(seconds: Int) {
         let components = Time.Conversion.components(fromSeconds: seconds)
         let clock = Time.Conversion.seconds(
             hour: components.hour, minute: components.minute, second: components.second
@@ -42,7 +42,7 @@ import Time
         #expect((0..<Time.Conversion.secondsPerDay).contains(clock))
     }
 
-    @Test func `instant translation and epoch coordinates`() throws {
+    @Test func `Instant translation preserves epoch displacements and fractional coordinates`() throws {
         let origin = try Instant(secondsSinceUnixEpoch: -1, nanosecondFraction: 999_999_999)
         let epoch = Time.Epoch(referenceDate: origin)
         let displacement = Duration.nanoseconds(2)
