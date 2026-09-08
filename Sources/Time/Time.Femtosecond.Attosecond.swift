@@ -38,3 +38,9 @@ extension Time.Femtosecond.Attosecond: Swift.Sendable {}
 extension Time.Femtosecond.Attosecond: Swift.Equatable {}
 
 extension Time.Femtosecond.Attosecond: Swift.Hashable {}
+
+extension Time.Femtosecond.Attosecond: Swift.Comparable {}
+
+#if !hasFeature(Embedded)
+extension Time.Femtosecond: Swift.Codable {}
+#endif

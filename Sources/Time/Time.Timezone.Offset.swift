@@ -1,11 +1,21 @@
 import Tagged
 import Polarity
 import Magnitude
-public import Affine
+public import Translation
 public import Difference
 internal import Cardinal
 
-extension Affine.Translation where Domain == Time.Second {
+extension Translation where Displacement == Time.Second.Offset {
+    public static var identity: Self { Self(offset: Time.Second.offset(.zero)) }
+
+    public func inverted() -> Self {
+        Self(offset: Time.Second.offset(-offset.underlying))
+    }
+
+    public func composed(with next: Self) throws(Difference.Error) -> Self {
+        Self(offset: Time.Second.offset(try offset.underlying.add.exact(next.offset.underlying)))
+    }
+
     public static var utc: Self { .identity }
 
     public static func seconds(_ seconds: Difference) -> Self {
@@ -55,7 +65,7 @@ extension Affine.Translation where Domain == Time.Second {
     }
 }
 
-extension Affine.Translation where Domain == Time.Second {
+extension Translation where Displacement == Time.Second.Offset {
     public init(hours: Int, minutes: Int = 0) throws(Difference.Error) {
         self = try Self.hours(hours, minutes: minutes)
     }

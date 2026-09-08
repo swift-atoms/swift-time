@@ -13,3 +13,5 @@ extension Time.Femtosecond: Swift.Equatable {}
 extension Time.Femtosecond: Swift.Hashable {}
 
 extension Time.Femtosecond: Swift.Sendable {}
+
+extension Time.Femtosecond: Swift.Comparable {}

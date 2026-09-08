@@ -1,15 +1,15 @@
-public import Affine
+public import Coordinate
 internal import Rational
 
 /// A Unix-epoch instant with exact nanosecond precision and Int64 seconds.
 ///
-/// Temporal point arithmetic is supplied by Time.Coordinate. This type adds the
-/// Unix reference, nanosecond quantization, and the bounded seconds representation.
+/// This owned temporal type supplies Unix reference semantics, intrinsic duration
+/// arithmetic, nanosecond quantization, and a bounded seconds representation.
 public struct Instant {
     private let coordinate: Time.Coordinate
 
-    public var position: Affine.Position<Time.Second> {
-        Affine.Position(rawValue: secondsSinceUnixEpoch)
+    public var position: Coordinate::Coordinate<1, Int64> {
+        Coordinate::Coordinate(rawValue: secondsSinceUnixEpoch)
     }
 
     public var nanosecondFraction: Int32 { components.nanoseconds }
@@ -72,7 +72,7 @@ extension Instant {
 extension Instant {
     public func displacement(to other: Self) -> Time.Nanosecond {
         // The difference between any two Int64-second coordinates fits Duration.
-        Time.Nanosecond(coordinate.duration(to: other.coordinate).attoseconds / 1_000_000_000)
+        Time.Nanosecond((other.coordinate.offset - coordinate.offset).attoseconds / 1_000_000_000)
     }
 
     public func advanced<Unit: Time.Unit>(
@@ -96,15 +96,14 @@ extension Instant {
 
     public func advanced(exactly duration: Duration) throws(Instant.Error) -> Self {
         guard duration.attoseconds % 1_000_000_000 == 0 else { throw .precision }
-        let translated: Time.Coordinate
-        do { translated = try coordinate.advanced(exactly: duration) }
-        catch { throw .overflow }
-        return try Self(coordinate: translated)
+        let result = coordinate.offset.attoseconds.addingReportingOverflow(duration.attoseconds)
+        guard !result.overflow else { throw .overflow }
+        return try Self(coordinate: Time.Coordinate(offset: .init(attoseconds: result.partialValue)))
     }
 
     public func duration(exactlyTo other: Self) throws(Instant.Error) -> Duration {
-        do { return try coordinate.duration(exactlyTo: other.coordinate) }
-        catch { throw .overflow }
+        // Every difference between two bounded Unix instants fits Swift.Duration.
+        other.coordinate.offset - coordinate.offset
     }
 
     public static func add(instant: Self, duration: Duration) -> Self {
@@ -117,8 +116,10 @@ extension Instant {
             duration.attoseconds % 1_000_000_000 == 0,
             "Instant arithmetic requires exact nanoseconds"
         )
+        let result = instant.coordinate.offset.attoseconds.subtractingReportingOverflow(duration.attoseconds)
+        precondition(!result.overflow, "Instant subtraction requires a representable coordinate")
         do {
-            return try Self(coordinate: instant.coordinate.retreated(exactlyBy: duration))
+            return try Self(coordinate: Time.Coordinate(offset: .init(attoseconds: result.partialValue)))
         } catch {
             preconditionFailure("Instant subtraction requires a representable coordinate")
         }

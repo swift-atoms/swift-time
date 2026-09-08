@@ -1,5 +1,6 @@
 @_exported public import Addition
-@_exported public import Affine
+@_exported public import Coordinate
+@_exported public import Translation
 @_exported public import Cardinal
 @_exported public import Difference
 @_exported public import Division

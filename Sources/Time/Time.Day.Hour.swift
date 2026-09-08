@@ -38,3 +38,5 @@ extension Time.Day.Hour: Swift.Sendable {}
 extension Time.Day.Hour: Swift.Equatable {}
 
 extension Time.Day.Hour: Swift.Hashable {}
+
+extension Time.Day.Hour: Swift.Comparable {}

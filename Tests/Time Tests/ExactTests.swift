@@ -1,4 +1,3 @@
-import Affine
 import Tagged
 import Difference
 import Cardinal
