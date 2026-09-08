@@ -7,5 +7,4 @@
 @_exported public import Polarity
 @_exported public import Ratio
 @_exported public import Rational
-@_exported public import Standard_Library_Extensions
 @_exported public import Tagged
