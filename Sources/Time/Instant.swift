@@ -1,11 +1,18 @@
 public import Affine
 internal import Rational
-internal import Division
-internal import Addition
 
+/// A Unix-epoch instant with exact nanosecond precision and Int64 seconds.
+///
+/// Temporal point arithmetic is supplied by Time.Coordinate. This type adds the
+/// Unix reference, nanosecond quantization, and the bounded seconds representation.
 public struct Instant {
-    public let position: Affine.Position<Time.Second>
-    public let nanosecondFraction: Int32
+    private let coordinate: Time.Coordinate
+
+    public var position: Affine.Position<Time.Second> {
+        Affine.Position(rawValue: secondsSinceUnixEpoch)
+    }
+
+    public var nanosecondFraction: Int32 { components.nanoseconds }
 
     public init(
         secondsSinceUnixEpoch: Int64,
@@ -14,31 +21,49 @@ public struct Instant {
         guard nanosecondFraction >= 0 && nanosecondFraction < 1_000_000_000 else {
             throw .nanosecondOutOfRange(nanosecondFraction)
         }
-        self.position = Affine.Position(rawValue: secondsSinceUnixEpoch)
-        self.nanosecondFraction = nanosecondFraction
+        self.coordinate = Time.Coordinate(
+            offset: .seconds(secondsSinceUnixEpoch) + .nanoseconds(nanosecondFraction)
+        )
+    }
+
+    private init(coordinate: Time.Coordinate) throws(Instant.Error) {
+        let attoseconds = coordinate.offset.attoseconds
+        guard attoseconds % 1_000_000_000 == 0 else { throw .precision }
+        let seconds = attoseconds / 1_000_000_000_000_000_000
+            - (attoseconds % 1_000_000_000_000_000_000 < 0 ? 1 : 0)
+        guard Int64(exactly: seconds) != nil else { throw .overflow }
+        self.coordinate = coordinate
+    }
+
+    private var components: (seconds: Int64, nanoseconds: Int32) {
+        let nanoseconds = coordinate.offset.attoseconds / 1_000_000_000
+        let remainder = nanoseconds % 1_000_000_000
+        let seconds = nanoseconds / 1_000_000_000 - (remainder < 0 ? 1 : 0)
+        return (
+            Int64(seconds),
+            Int32(remainder < 0 ? remainder + 1_000_000_000 : remainder)
+        )
     }
 }
 
 extension Instant {
-    public var secondsSinceUnixEpoch: Int64 { position.rawValue }
+    public var secondsSinceUnixEpoch: Int64 { components.seconds }
 
     public init(secondsSinceUnixEpoch: Int64) {
-        self.position = Affine.Position(rawValue: secondsSinceUnixEpoch)
-        self.nanosecondFraction = 0
+        self.coordinate = Time.Coordinate(offset: .seconds(secondsSinceUnixEpoch))
     }
 
     public init(
         _unchecked: Void, secondsSinceUnixEpoch: Int64, nanosecondFraction: Int32
     ) {
         precondition((0..<1_000_000_000).contains(nanosecondFraction))
-        self.position = Affine.Position(rawValue: secondsSinceUnixEpoch)
-        self.nanosecondFraction = nanosecondFraction
+        self.coordinate = Time.Coordinate(
+            offset: .seconds(secondsSinceUnixEpoch) + .nanoseconds(nanosecondFraction)
+        )
     }
 
     public static func < (lhs: Self, rhs: Self) -> Bool {
-        lhs.position == rhs.position
-            ? lhs.nanosecondFraction < rhs.nanosecondFraction
-            : lhs.position < rhs.position
+        lhs.coordinate < rhs.coordinate
     }
 
     public static func isLessThan(lhs: Self, rhs: Self) -> Bool { lhs < rhs }
@@ -46,9 +71,8 @@ extension Instant {
 
 extension Instant {
     public func displacement(to other: Self) -> Time.Nanosecond {
-        let seconds = Int128(other.secondsSinceUnixEpoch) - Int128(secondsSinceUnixEpoch)
-        let fraction = Int128(other.nanosecondFraction) - Int128(nanosecondFraction)
-        return Time.Nanosecond(seconds * 1_000_000_000 + fraction)
+        // The difference between any two Int64-second coordinates fits Duration.
+        Time.Nanosecond(coordinate.duration(to: other.coordinate).attoseconds / 1_000_000_000)
     }
 
     public func advanced<Unit: Time.Unit>(
@@ -65,35 +89,22 @@ extension Instant {
             if error == .inexact { throw .precision }
             throw .overflow
         }
-        let split: (quotient: Int128, remainder: Int128)
-        do { split = try Division.euclidean(nanoseconds, by: 1_000_000_000) }
-        catch { throw .overflow }
-        let fraction = Int128(nanosecondFraction) + split.remainder
-        let carry = fraction / 1_000_000_000
-        let base = Int128(secondsSinceUnixEpoch)
-        let sum = Addition.reporting(base, split.quotient)
-        guard !sum.overflow else { throw .overflow }
-        let carried = Addition.reporting(sum.value, carry)
-        guard !carried.overflow, let seconds = Int64(exactly: carried.value) else {
-            throw .overflow
-        }
-        return Self(
-            _unchecked: (), secondsSinceUnixEpoch: seconds,
-            nanosecondFraction: Int32(fraction % 1_000_000_000)
-        )
+        let attoseconds = nanoseconds.multipliedReportingOverflow(by: 1_000_000_000)
+        guard !attoseconds.overflow else { throw .overflow }
+        return try advanced(exactly: Duration(attoseconds: attoseconds.partialValue))
     }
 
     public func advanced(exactly duration: Duration) throws(Instant.Error) -> Self {
-        let attoseconds = duration.attoseconds
-        guard attoseconds % 1_000_000_000 == 0 else { throw .precision }
-        return try advanced(by: Time.Nanosecond(attoseconds / 1_000_000_000))
+        guard duration.attoseconds % 1_000_000_000 == 0 else { throw .precision }
+        let translated: Time.Coordinate
+        do { translated = try coordinate.advanced(exactly: duration) }
+        catch { throw .overflow }
+        return try Self(coordinate: translated)
     }
 
     public func duration(exactlyTo other: Self) throws(Instant.Error) -> Duration {
-        let nanoseconds: Int128
-        do { nanoseconds = try displacement(to: other).value.integer(as: Int128.self) }
+        do { return try coordinate.duration(exactlyTo: other.coordinate) }
         catch { throw .overflow }
-        return Duration(attoseconds: nanoseconds * 1_000_000_000)
     }
 
     public static func add(instant: Self, duration: Duration) -> Self {
@@ -102,11 +113,15 @@ extension Instant {
     }
 
     public static func subtract(duration: Duration, from instant: Self) -> Self {
-        let attoseconds = duration.attoseconds
-        precondition(attoseconds % 1_000_000_000 == 0, "Instant arithmetic requires exact nanoseconds")
-        let displacement = -(attoseconds / 1_000_000_000)
-        do { return try instant.advanced(by: Time.Nanosecond(displacement)) }
-        catch { preconditionFailure("Instant subtraction requires a representable coordinate") }
+        precondition(
+            duration.attoseconds % 1_000_000_000 == 0,
+            "Instant arithmetic requires exact nanoseconds"
+        )
+        do {
+            return try Self(coordinate: instant.coordinate.retreated(exactlyBy: duration))
+        } catch {
+            preconditionFailure("Instant subtraction requires a representable coordinate")
+        }
     }
 
     public static func duration(from: Self, to: Self) -> Duration {
@@ -118,7 +133,6 @@ extension Instant {
     public static func - (lhs: Self, rhs: Duration) -> Self { subtract(duration: rhs, from: lhs) }
     public static func - (lhs: Self, rhs: Self) -> Duration { duration(from: rhs, to: lhs) }
 }
-
 
 extension Instant: Swift.Sendable {}
 

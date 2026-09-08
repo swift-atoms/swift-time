@@ -13,7 +13,6 @@ let package = Package(
     ],
     products: [
         .library(name: "Time", targets: ["Time"]),
-
         .library(name: "Time Foundation Integration", targets: ["Time Foundation Integration"]),
         .library(name: "Time Test Support", targets: ["Time Test Support"]),
     ],
