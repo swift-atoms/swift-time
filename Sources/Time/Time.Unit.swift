@@ -34,11 +34,11 @@ extension Time.Unit {
     public static prefix func - (value: Self) -> Self { Self(-value.value) }
 
     public static func + (lhs: Self, rhs: Self) throws(Rational.Error) -> Self {
-        Self(try lhs.value.adding(rhs.value))
+        Self(lhs.value.adding(rhs.value))
     }
 
     public static func - (lhs: Self, rhs: Self) throws(Rational.Error) -> Self {
-        Self(try lhs.value.subtracting(rhs.value))
+        Self(lhs.value.subtracting(rhs.value))
     }
 
     public static func count(_ value: Cardinal) -> Count {
