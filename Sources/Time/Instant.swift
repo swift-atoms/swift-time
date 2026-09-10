@@ -1,10 +1,6 @@
 public import Coordinate
 internal import Rational
 
-/// A Unix-epoch instant with exact nanosecond precision and Int64 seconds.
-///
-/// This owned temporal type supplies Unix reference semantics, intrinsic duration
-/// arithmetic, nanosecond quantization, and a bounded seconds representation.
 public struct Instant {
     private let coordinate: Time.Coordinate
 
@@ -71,7 +67,7 @@ extension Instant {
 
 extension Instant {
     public func displacement(to other: Self) -> Time.Nanosecond {
-        // The difference between any two Int64-second coordinates fits Duration.
+
         Time.Nanosecond((other.coordinate.offset - coordinate.offset).attoseconds / 1_000_000_000)
     }
 
@@ -102,7 +98,7 @@ extension Instant {
     }
 
     public func duration(exactlyTo other: Self) throws(Instant.Error) -> Duration {
-        // Every difference between two bounded Unix instants fits Swift.Duration.
+
         other.coordinate.offset - coordinate.offset
     }
 
