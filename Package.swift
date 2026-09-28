@@ -22,7 +22,7 @@ let package = Package(
         .package(url: "https://github.com/swift-atoms/swift-polarity.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-coordinate.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-translation.git", branch: "main"),
-        .package(url: "https://github.com/swift-atoms/swift-cardinal.git", branch: "main", traits: ["Tagged"]),
+        .package(url: "https://github.com/swift-atoms/swift-cardinal.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-difference.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-division.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-rational.git", branch: "main"),
