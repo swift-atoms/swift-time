@@ -42,7 +42,7 @@ import Time
     }
 
     @Test func `Instant translation preserves epoch displacements and fractional coordinates`() throws {
-        let origin = try Instant(secondsSinceUnixEpoch: -1, nanosecondFraction: 999_999_999)
+        let origin = try Time.Instant(secondsSinceUnixEpoch: -1, nanosecondFraction: 999_999_999)
         let epoch = Time.Epoch(referenceDate: origin)
         let displacement = Duration.nanoseconds(2)
         let instant = epoch.instant(after: displacement)
@@ -64,8 +64,8 @@ import Time
         #expect(offset.hours == -5)
         #expect(offset.minutes == 30)
         #expect(Time.Zone.utc.isUTC)
-        #expect(Instant.milliseconds(from: nil) == -1)
-        #expect(Instant.milliseconds(from: .seconds(1)) == 1000)
+        #expect(Time.Instant.milliseconds(from: nil) == -1)
+        #expect(Time.Instant.milliseconds(from: .seconds(1)) == 1000)
         #expect(Duration.nanoseconds(500_000_000).inSeconds == 0.5)
     }
 }

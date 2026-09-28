@@ -16,7 +16,11 @@ let package = Package(
         .library(name: "Time Foundation Integration", targets: ["Time Foundation Integration"]),
         .library(name: "Time Test Support", targets: ["Time Test Support"]),
     ],
+    traits: [
+        .trait(name: "Affine", description: "Affine integration"),
+    ],
     dependencies: [
+        .package(url: "https://github.com/swift-atoms/swift-affine.git", branch: "main", traits: [.trait(name: "Tagged", condition: .when(traits: ["Affine"]))]),
         .package(url: "https://github.com/swift-atoms/swift-addition.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-magnitude.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-polarity.git", branch: "main"),
@@ -30,9 +34,14 @@ let package = Package(
         .package(url: "https://github.com/swift-atoms/swift-tagged.git", branch: "main"),
     ],
     targets: [
+        .testTarget(name: "Time Affine Tests", dependencies: [
+                .target(name: "Time"),
+                .product(name: "Affine", package: "swift-affine", condition: .when(traits: ["Affine"]))
+            ], path: "Tests/Time Affine Tests"),
         .target(
             name: "Time",
             dependencies: [
+                .product(name: "Affine", package: "swift-affine", condition: .when(traits: ["Affine"])),
                 .product(name: "Addition", package: "swift-addition"),
                 .product(name: "Magnitude", package: "swift-magnitude"),
                 .product(name: "Polarity", package: "swift-polarity"),

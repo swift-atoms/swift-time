@@ -31,16 +31,16 @@ import Time
 
     @Test(arguments: [Int64.min, -1, 0, 1, Int64.max])
     func `unix positions round trip endpoint seconds with exact nanosecond fractions`(seconds: Int64) throws {
-        let value = try Instant(secondsSinceUnixEpoch: seconds, nanosecondFraction: 999_999_999)
+        let value = try Time.Instant(secondsSinceUnixEpoch: seconds, nanosecondFraction: 999_999_999)
         let encoded = try JSONEncoder().encode(value)
-        #expect(try JSONDecoder().decode(Instant.self, from: encoded) == value)
+        #expect(try JSONDecoder().decode(Time.Instant.self, from: encoded) == value)
     }
 
     @Test func `arbitrary precision displacements report coordinate overflow without narrowing traps`() throws {
         let bytes = Data("{\"numerator\":\"340282366920938463463374607431768211457\",\"denominator\":\"1\"}".utf8)
         let displacement = try JSONDecoder().decode(Time.Nanosecond.self, from: bytes)
-        let origin = Instant(secondsSinceUnixEpoch: 0)
-        #expect(throws: Instant.Error.overflow) { try origin.advanced(by: displacement) }
-        #expect(throws: Instant.Error.overflow) { try origin.advanced(by: -displacement) }
+        let origin = Time.Instant(secondsSinceUnixEpoch: 0)
+        #expect(throws: Time.Instant.Error.overflow) { try origin.advanced(by: displacement) }
+        #expect(throws: Time.Instant.Error.overflow) { try origin.advanced(by: -displacement) }
     }
 }

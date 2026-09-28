@@ -1,4 +1,4 @@
-extension Instant {
+extension Time.Instant {
 
     @inlinable
     public static func milliseconds(from duration: Duration?) -> CInt {

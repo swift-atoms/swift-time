@@ -1,1 +1,0 @@
-extension Instant: Swift.Comparable {}

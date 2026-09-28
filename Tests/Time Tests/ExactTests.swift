@@ -66,8 +66,8 @@ import Ratio
     }
 
     @Test func `instant preserves the complete endpoint displacement`() throws {
-        let first = Instant(secondsSinceUnixEpoch: .min)
-        let last = try Instant(secondsSinceUnixEpoch: .max, nanosecondFraction: 999_999_999)
+        let first = Time.Instant(secondsSinceUnixEpoch: .min)
+        let last = try Time.Instant(secondsSinceUnixEpoch: .max, nanosecondFraction: 999_999_999)
         let displacement = first.displacement(to: last)
         #expect(displacement.value.numerator == Integer(UInt64.max) * 1_000_000_000 + 999_999_999)
         #expect(try first.advanced(by: displacement) == last)
@@ -78,36 +78,36 @@ import Ratio
         #expect(try last.advanced(exactly: first.duration(exactlyTo: last) * -1) == first)
         #expect(last - duration == first)
         #expect(first + duration == last)
-        #expect(throws: Instant.Error.overflow) { try first.advanced(by: Time.Nanosecond(-1)) }
-        #expect(throws: Instant.Error.overflow) { try last.advanced(by: Time.Nanosecond(1)) }
+        #expect(throws: Time.Instant.Error.overflow) { try first.advanced(by: Time.Nanosecond(-1)) }
+        #expect(throws: Time.Instant.Error.overflow) { try last.advanced(by: Time.Nanosecond(1)) }
     }
 
     @Test func `instant rejects subnanosecond precision rather than truncating`() throws {
-        let origin = Instant(secondsSinceUnixEpoch: 0)
-        #expect(throws: Instant.Error.precision) {
+        let origin = Time.Instant(secondsSinceUnixEpoch: 0)
+        #expect(throws: Time.Instant.Error.precision) {
             try origin.advanced(exactly: Duration(secondsComponent: 0, attosecondsComponent: 1))
         }
-        #expect(throws: Instant.Error.precision) {
+        #expect(throws: Time.Instant.Error.precision) {
             try origin.advanced(by: Time.Picosecond(1))
         }
         #expect(try origin.advanced(by: Time.Picosecond(1000)).nanosecondFraction == 1)
         #expect(try origin.advanced(by: Time.Nanosecond(-1)) ==
-            Instant(secondsSinceUnixEpoch: -1, nanosecondFraction: 999_999_999))
+            Time.Instant(secondsSinceUnixEpoch: -1, nanosecondFraction: 999_999_999))
         let picosecond = Duration.seconds(0.000000000001)
         #expect(picosecond.attoseconds == 1_000_000)
-        #expect(throws: Instant.Error.precision) {
+        #expect(throws: Time.Instant.Error.precision) {
             try origin.advanced(exactly: picosecond)
         }
     }
 
     @Test func `full native duration range produces checked precision or coordinate errors`() throws {
-        let origin = Instant(secondsSinceUnixEpoch: 0)
+        let origin = Time.Instant(secondsSinceUnixEpoch: 0)
         for attoseconds in [Int128.min, .max] {
-            #expect(throws: Instant.Error.precision) {
+            #expect(throws: Time.Instant.Error.precision) {
                 try origin.advanced(exactly: Duration(attoseconds: attoseconds))
             }
             let exactNanoseconds = attoseconds / 1_000_000_000 * 1_000_000_000
-            #expect(throws: Instant.Error.overflow) {
+            #expect(throws: Time.Instant.Error.overflow) {
                 try origin.advanced(exactly: Duration(attoseconds: exactNanoseconds))
             }
         }
@@ -116,10 +116,10 @@ import Ratio
     @Test func `instant decoding establishes the fraction invariant`() throws {
         for fraction in [-1, 1_000_000_000, Int(Int32.max)] {
             let bytes = Data("{\"secondsSinceUnixEpoch\":0,\"nanosecondFraction\":\(fraction)}".utf8)
-            #expect(throws: DecodingError.self) { try JSONDecoder().decode(Instant.self, from: bytes) }
+            #expect(throws: DecodingError.self) { try JSONDecoder().decode(Time.Instant.self, from: bytes) }
         }
-        let value = try Instant(secondsSinceUnixEpoch: -123, nanosecondFraction: 999_999_999)
-        #expect(try JSONDecoder().decode(Instant.self, from: JSONEncoder().encode(value)) == value)
+        let value = try Time.Instant(secondsSinceUnixEpoch: -123, nanosecondFraction: 999_999_999)
+        #expect(try JSONDecoder().decode(Time.Instant.self, from: JSONEncoder().encode(value)) == value)
     }
 
     @Test func `fixed zone formatting retains negative subminute offsets`() throws {
@@ -152,7 +152,7 @@ import Ratio
     }
 
     @Test func `epoch converts exact tagged displacements`() throws {
-        let origin = try Instant(secondsSinceUnixEpoch: -1, nanosecondFraction: 999_999_999)
+        let origin = try Time.Instant(secondsSinceUnixEpoch: -1, nanosecondFraction: 999_999_999)
         let epoch = Time.Epoch(referenceDate: origin)
         let next = try epoch.instant(after: Time.Nanosecond(2))
         #expect(next.secondsSinceUnixEpoch == 0)
@@ -161,10 +161,10 @@ import Ratio
     }
 
     @Test func `timeout millisecond projection saturates without intermediate overflow`() {
-        #expect(Instant.milliseconds(from: .seconds(Int64.max)) == CInt.max)
-        #expect(Instant.milliseconds(from: .seconds(Int64.min)) == CInt.min)
-        #expect(Instant.milliseconds(from: Duration(attoseconds: .max)) == CInt.max)
-        #expect(Instant.milliseconds(from: Duration(attoseconds: .min)) == CInt.min)
+        #expect(Time.Instant.milliseconds(from: .seconds(Int64.max)) == CInt.max)
+        #expect(Time.Instant.milliseconds(from: .seconds(Int64.min)) == CInt.min)
+        #expect(Time.Instant.milliseconds(from: Duration(attoseconds: .max)) == CInt.max)
+        #expect(Time.Instant.milliseconds(from: Duration(attoseconds: .min)) == CInt.min)
     }
 
     @Test func `approximate duration projections accept the full native range`() {

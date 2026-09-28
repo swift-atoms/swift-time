@@ -8,9 +8,9 @@ import Time
         seconds: Int64,
         fraction: Int32
     ) throws {
-        let instant = try Instant(secondsSinceUnixEpoch: seconds, nanosecondFraction: fraction)
+        let instant = try Time.Instant(secondsSinceUnixEpoch: seconds, nanosecondFraction: fraction)
         let coordinate = Time.Coordinate(offset: .seconds(seconds) + .nanoseconds(fraction))
-        let epoch = Instant(secondsSinceUnixEpoch: 0)
+        let epoch = Time.Instant(secondsSinceUnixEpoch: 0)
 
         #expect(instant.secondsSinceUnixEpoch == seconds)
         #expect(instant.position.rawValue == seconds)
@@ -20,19 +20,19 @@ import Time
         let bytes = try JSONEncoder().encode(instant)
         let fields = try #require(JSONSerialization.jsonObject(with: bytes) as? [String: Any])
         #expect(Set(fields.keys) == ["secondsSinceUnixEpoch", "nanosecondFraction"])
-        #expect(try JSONDecoder().decode(Instant.self, from: bytes) == instant)
+        #expect(try JSONDecoder().decode(Time.Instant.self, from: bytes) == instant)
     }
 
     @Test
     func `unix validation rejects coordinate overflow and subnanosecond precision`() {
-        let first = Instant(secondsSinceUnixEpoch: .min)
-        let last = Instant(secondsSinceUnixEpoch: .max)
+        let first = Time.Instant(secondsSinceUnixEpoch: .min)
+        let last = Time.Instant(secondsSinceUnixEpoch: .max)
         let largePositive = Swift.Duration(attoseconds: Int128.max / 1_000_000_000 * 1_000_000_000)
         let largeNegative = Swift.Duration(attoseconds: Int128.min / 1_000_000_000 * 1_000_000_000)
-        #expect(throws: Instant.Error.overflow) { try last.advanced(exactly: largePositive) }
-        #expect(throws: Instant.Error.overflow) { try first.advanced(exactly: largeNegative) }
-        #expect(throws: Instant.Error.overflow) { try last.advanced(by: Time.Nanosecond(Int128.max)) }
-        #expect(throws: Instant.Error.overflow) { try first.advanced(by: Time.Nanosecond(Int128.min)) }
-        #expect(throws: Instant.Error.precision) { try first.advanced(exactly: .init(attoseconds: -1)) }
+        #expect(throws: Time.Instant.Error.overflow) { try last.advanced(exactly: largePositive) }
+        #expect(throws: Time.Instant.Error.overflow) { try first.advanced(exactly: largeNegative) }
+        #expect(throws: Time.Instant.Error.overflow) { try last.advanced(by: Time.Nanosecond(Int128.max)) }
+        #expect(throws: Time.Instant.Error.overflow) { try first.advanced(by: Time.Nanosecond(Int128.min)) }
+        #expect(throws: Time.Instant.Error.precision) { try first.advanced(exactly: .init(attoseconds: -1)) }
     }
 }

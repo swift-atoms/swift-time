@@ -1,5 +1,5 @@
 #if !hasFeature(Embedded)
-extension Instant: Swift.Codable {
+extension Time.Instant: Swift.Codable {
         private enum CodingKeys: String, CodingKey {
             case secondsSinceUnixEpoch
             case nanosecondFraction

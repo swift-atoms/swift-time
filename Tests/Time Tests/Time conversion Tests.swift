@@ -112,11 +112,11 @@ import Time
     }
 
     @Test func `instant conversion wraps temporal failures and preserves precision failures`() {
-        let origin = Instant(secondsSinceUnixEpoch: 0)
-        #expect(throws: Instant.Error.conversion(.zeroFactor)) { try origin.advanced(by: Zero(1)) }
-        #expect(throws: Instant.Error.conversion(.negativeFactor)) { try origin.advanced(by: Negative(1)) }
-        #expect(throws: Instant.Error.precision) { try origin.advanced(by: Time.Picosecond(1)) }
-        #expect(throws: Instant.Error.overflow) { try origin.advanced(by: Large(1)) }
+        let origin = Time.Instant(secondsSinceUnixEpoch: 0)
+        #expect(throws: Time.Instant.Error.conversion(.zeroFactor)) { try origin.advanced(by: Zero(1)) }
+        #expect(throws: Time.Instant.Error.conversion(.negativeFactor)) { try origin.advanced(by: Negative(1)) }
+        #expect(throws: Time.Instant.Error.precision) { try origin.advanced(by: Time.Picosecond(1)) }
+        #expect(throws: Time.Instant.Error.overflow) { try origin.advanced(by: Large(1)) }
     }
 
     @Test func `typed conversion errors retain checked conformances across unit pairs`() throws {

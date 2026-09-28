@@ -42,7 +42,7 @@ private func requireSendable<T: Sendable>(_ value: T) {}
     }
 
     @Test func `conditional conformances remain available`() {
-        let epoch = Time.Epoch(referenceDate: Instant(secondsSinceUnixEpoch: 0))
+        let epoch = Time.Epoch(referenceDate: Time.Instant(secondsSinceUnixEpoch: 0))
         requireSendable(epoch)
         #expect(Set([epoch, epoch]).count == 1)
     }
