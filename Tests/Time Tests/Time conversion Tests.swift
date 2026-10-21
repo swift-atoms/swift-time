@@ -24,7 +24,15 @@ import Time
         let value: Rational
         init(_ value: Rational) { self.value = value }
         static var seconds: Ratio<Self, Time.Second> {
-            Ratio(try! Rational(numerator: 1, denominator: 2))
+            Ratio(
+                { () -> Rational in
+                    do {
+                        return try Rational(numerator: 1, denominator: 2)
+                    } catch {
+                        preconditionFailure("One half is a valid rational")
+                    }
+                }()
+            )
         }
     }
 
