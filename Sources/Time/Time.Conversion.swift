@@ -1,5 +1,5 @@
-import Ratio
 internal import Division
+import Ratio
 
 extension Time {
     public enum Conversion {}
@@ -16,12 +16,13 @@ extension Time.Conversion {
         hour.value * secondsPerHour + minute.value * secondsPerMinute + second.value
     }
 
-    public static func components(fromSeconds seconds: Int) -> (
+    public static func components(
+        fromSeconds seconds: Int
+    ) -> (
         days: Int, hour: Time.Day.Hour, minute: Time.Hour.Minute, second: Time.Minute.Second
     ) {
         let split: (quotient: Int, remainder: Int)
-        do { split = try Division.euclidean(seconds, by: secondsPerDay) }
-        catch { preconditionFailure("Uniform-day division has a positive, representable divisor") }
+        do { split = try Division.euclidean(seconds, by: secondsPerDay) } catch { preconditionFailure("Uniform-day division has a positive, representable divisor") }
         let days = split.quotient
         let clock = split.remainder
         return (
@@ -35,7 +36,6 @@ extension Time.Conversion {
 
 extension Time.Conversion {
     private static func constant<Unit: Time.Unit>(_ unit: Unit.Type) -> Int {
-        do { return Int(try unit.seconds.applying(to: 1 as Int128)) }
-        catch { preconditionFailure("Integral clock-unit scales are representable") }
+        do { return Int(try unit.seconds.applying(to: 1 as Int128)) } catch { preconditionFailure("Integral clock-unit scales are representable") }
     }
 }

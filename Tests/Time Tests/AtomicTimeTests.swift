@@ -1,5 +1,5 @@
-import Tagged
 import Difference
+import Tagged
 import Testing
 import Time
 
@@ -35,7 +35,9 @@ import Time
     func `Dividing seconds yields whole days and a bounded remainder that reconstruct the input`(seconds: Int) {
         let components = Time.Conversion.components(fromSeconds: seconds)
         let clock = Time.Conversion.seconds(
-            hour: components.hour, minute: components.minute, second: components.second
+            hour: components.hour,
+            minute: components.minute,
+            second: components.second
         )
         #expect(components.days * Time.Conversion.secondsPerDay + clock == seconds)
         #expect((0..<Time.Conversion.secondsPerDay).contains(clock))
@@ -52,9 +54,13 @@ import Time
         #expect(instant - displacement == origin)
         #expect(origin.advanced(by: displacement) == instant)
         #expect(origin + .zero == origin)
-        #expect(try Time.totalNanoseconds(
-            millisecond: .init(123), microsecond: .init(456), nanosecond: .init(789)
-        ) == 123_456_789)
+        #expect(
+            try Time.totalNanoseconds(
+                millisecond: .init(123),
+                microsecond: .init(456),
+                nanosecond: .init(789)
+            ) == 123_456_789
+        )
     }
 
     @Test func `offsets have no calendar dependency`() throws {

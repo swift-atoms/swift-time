@@ -1,11 +1,11 @@
-import Tagged
-import Difference
 import Cardinal
+import Difference
 import Foundation
+import Ratio
+import Rational
+import Tagged
 import Testing
 import Time
-import Rational
-import Ratio
 
 @Suite struct `Elapsed quantities preserve exact arithmetic` {
     @Test func `quantity values preserve ordering arithmetic and rational encoding`() throws {
@@ -91,8 +91,7 @@ import Ratio
             try origin.advanced(by: Time.Picosecond(1))
         }
         #expect(try origin.advanced(by: Time.Picosecond(1000)).nanosecondFraction == 1)
-        #expect(try origin.advanced(by: Time.Nanosecond(-1)) ==
-            Time.Instant(secondsSinceUnixEpoch: -1, nanosecondFraction: 999_999_999))
+        #expect(try origin.advanced(by: Time.Nanosecond(-1)) == Time.Instant(secondsSinceUnixEpoch: -1, nanosecondFraction: 999_999_999))
         let picosecond = Duration.seconds(0.000000000001)
         #expect(picosecond.attoseconds == 1_000_000)
         #expect(throws: Time.Instant.Error.precision) {

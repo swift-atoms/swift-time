@@ -42,5 +42,5 @@ extension Time.Femtosecond.Attosecond: Swift.Hashable {}
 extension Time.Femtosecond.Attosecond: Swift.Comparable {}
 
 #if !hasFeature(Embedded)
-extension Time.Femtosecond: Swift.Codable {}
+    extension Time.Femtosecond: Swift.Codable {}
 #endif

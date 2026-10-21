@@ -1,5 +1,5 @@
-import Time
 import Testing
+import Time
 
 @Suite struct `Duration owner retains compatibility` {
     private func throughProtocol<D: Time::Duration.`Protocol`>(
@@ -23,9 +23,9 @@ import Testing
 
     @Test func `duration owner conversions include the native storage boundary`() {
         let duration = Time::Duration(attoseconds: .max)
-        #expect(duration.inSeconds.bitPattern == 0x4422725dd1d243ac)
-        #expect(duration.inMilliseconds.bitPattern == 0x44c203af9ee75616)
-        #expect(duration.inMicroseconds.bitPattern == 0x45619799812dea11)
-        #expect(duration.inNanoseconds.bitPattern == 0x46012e0be826d695)
+        #expect(duration.inSeconds.bitPattern == 0x4422_725d_d1d2_43ac)
+        #expect(duration.inMilliseconds.bitPattern == 0x44c2_03af_9ee7_5616)
+        #expect(duration.inMicroseconds.bitPattern == 0x4561_9799_812d_ea11)
+        #expect(duration.inNanoseconds.bitPattern == 0x4601_2e0b_e826_d695)
     }
 }

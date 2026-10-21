@@ -18,10 +18,14 @@ import Time
         (.seconds(-2), -2.0, -2000.0, -2_000_000.0, -2_000_000_000.0),
         (.milliseconds(1250), 1.25, 1250.0, 1_250_000.0, 1_250_000_000.0),
         (.milliseconds(-1250), -1.25, -1250.0, -1_250_000.0, -1_250_000_000.0),
-        (.init(secondsComponent: 1, attosecondsComponent: -500_000_000_000_000_000),
-            0.5, 500.0, 500_000.0, 500_000_000.0),
-        (.init(secondsComponent: -1, attosecondsComponent: 500_000_000_000_000_000),
-            -0.5, -500.0, -500_000.0, -500_000_000.0),
+        (
+            .init(secondsComponent: 1, attosecondsComponent: -500_000_000_000_000_000),
+            0.5, 500.0, 500_000.0, 500_000_000.0
+        ),
+        (
+            .init(secondsComponent: -1, attosecondsComponent: 500_000_000_000_000_000),
+            -0.5, -500.0, -500_000.0, -500_000_000.0
+        ),
     ])
     func `unit conversions preserve signed and fractional durations`(
         duration: Swift.Duration,
@@ -47,10 +51,14 @@ import Time
     }
 
     @Test(arguments: [
-        (Int128.max, UInt64(0x4422725dd1d243ac), UInt64(0x44c203af9ee75616),
-            UInt64(0x45619799812dea11), UInt64(0x46012e0be826d695)),
-        (Int128.min, UInt64(0xc422725dd1d243ac), UInt64(0xc4c203af9ee75616),
-            UInt64(0xc5619799812dea11), UInt64(0xc6012e0be826d695)),
+        (
+            Int128.max, UInt64(0x4422_725d_d1d2_43ac), UInt64(0x44c2_03af_9ee7_5616),
+            UInt64(0x4561_9799_812d_ea11), UInt64(0x4601_2e0b_e826_d695)
+        ),
+        (
+            Int128.min, UInt64(0xc422_725d_d1d2_43ac), UInt64(0xc4c2_03af_9ee7_5616),
+            UInt64(0xc561_9799_812d_ea11), UInt64(0xc601_2e0b_e826_d695)
+        ),
     ])
     func `native duration boundaries retain their floating point conversions`(
         attoseconds: Int128,

@@ -1,9 +1,9 @@
-import Tagged
-import Polarity
-import Magnitude
-public import Translation
-public import Difference
 internal import Cardinal
+public import Difference
+import Magnitude
+import Polarity
+import Tagged
+public import Translation
 
 extension Translation where Displacement == Time.Second.Offset {
     public static var identity: Self { Self(offset: Time.Second.offset(.zero)) }
@@ -27,15 +27,19 @@ extension Translation where Displacement == Time.Second.Offset {
     }
 
     public static func hours(
-        _ hours: Int, minutes: Int = 0
+        _ hours: Int,
+        minutes: Int = 0
     ) throws(Difference.Error) -> Self {
-        let value = Int128(hours) * Int128(Time.Conversion.secondsPerHour)
+        let value =
+            Int128(hours) * Int128(Time.Conversion.secondsPerHour)
             + (hours < 0 ? -1 : 1) * Int128(minutes) * Int128(Time.Conversion.secondsPerMinute)
         guard let magnitude = UInt(exactly: value.magnitude) else { throw .overflow }
-        return .seconds(Difference(
-            polarity: value < 0 ? .negative : .positive,
-            magnitude: Difference.Magnitude(Cardinal(magnitude))
-        ))
+        return .seconds(
+            Difference(
+                polarity: value < 0 ? .negative : .positive,
+                magnitude: Difference.Magnitude(Cardinal(magnitude))
+            )
+        )
     }
 
     public var isUTC: Bool { offset.underlying == .zero }
@@ -47,15 +51,18 @@ extension Translation where Displacement == Time.Second.Offset {
     }
 
     public var minutes: Int {
-        Int(offset.underlying.magnitude.value.rawValue % UInt(Time.Conversion.secondsPerHour)
-            / UInt(Time.Conversion.secondsPerMinute))
+        Int(
+            offset.underlying.magnitude.value.rawValue % UInt(Time.Conversion.secondsPerHour)
+                / UInt(Time.Conversion.secondsPerMinute)
+        )
     }
 
     public var description: String {
         let value = offset.underlying
         let magnitude = value.magnitude.value.rawValue
         let hours = magnitude / UInt(Time.Conversion.secondsPerHour)
-        let minutes = magnitude % UInt(Time.Conversion.secondsPerHour)
+        let minutes =
+            magnitude % UInt(Time.Conversion.secondsPerHour)
             / UInt(Time.Conversion.secondsPerMinute)
         let seconds = magnitude % UInt(Time.Conversion.secondsPerMinute)
         func padded(_ value: UInt) -> String { value < 10 ? "0\(value)" : "\(value)" }

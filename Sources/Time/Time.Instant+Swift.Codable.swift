@@ -1,5 +1,5 @@
 #if !hasFeature(Embedded)
-extension Time.Instant: Swift.Codable {
+    extension Time.Instant: Swift.Codable {
         private enum CodingKeys: String, CodingKey {
             case secondsSinceUnixEpoch
             case nanosecondFraction
@@ -9,10 +9,10 @@ extension Time.Instant: Swift.Codable {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             let seconds = try values.decode(Int64.self, forKey: .secondsSinceUnixEpoch)
             let fraction = try values.decode(Int32.self, forKey: .nanosecondFraction)
-            do { try self.init(secondsSinceUnixEpoch: seconds, nanosecondFraction: fraction) }
-            catch {
+            do { try self.init(secondsSinceUnixEpoch: seconds, nanosecondFraction: fraction) } catch {
                 throw DecodingError.dataCorruptedError(
-                    forKey: .nanosecondFraction, in: values,
+                    forKey: .nanosecondFraction,
+                    in: values,
                     debugDescription: "An Instant fraction must be in 0..<1,000,000,000"
                 )
             }

@@ -5,8 +5,7 @@ extension Time.Picosecond: Time.Unit {
         do {
             return try Ratio<Time.Picosecond, Time.Nanosecond>.default
                 .composed(with: Time.Nanosecond.seconds)
-        }
-        catch { preconditionFailure("The temporal unit scale is representable") }
+        } catch { preconditionFailure("The temporal unit scale is representable") }
     }
 }
 

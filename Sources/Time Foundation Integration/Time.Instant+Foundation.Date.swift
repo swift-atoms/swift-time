@@ -9,7 +9,8 @@ extension Time.Instant {
         let floored = interval.rounded(.down)
         guard let seconds = Int64(exactly: floored) else { throw .overflow }
         let nanoseconds = ((interval - floored) * 1_000_000_000).rounded()
-        let (carried, overflow) = nanoseconds == 1_000_000_000
+        let (carried, overflow) =
+            nanoseconds == 1_000_000_000
             ? seconds.addingReportingOverflow(1)
             : (seconds, false)
         guard !overflow else { throw .overflow }

@@ -1,6 +1,6 @@
+internal import Cardinal
 internal import Magnitude
 internal import Polarity
-internal import Cardinal
 internal import Tagged
 public import Translation
 
@@ -30,11 +30,12 @@ extension Time.Zone.Rule {
         let second = try local.advanced(exactly: .zero - Self.duration(of: after))
         let firstValid = offset(at: first) == before
         let secondValid = offset(at: second) == after
-        let candidates = switch (firstValid, secondValid) {
-        case (true, false): (earlier: first, later: first)
-        case (false, true): (earlier: second, later: second)
-        default: (earlier: Swift.min(first, second), later: Swift.max(first, second))
-        }
+        let candidates =
+            switch (firstValid, secondValid) {
+            case (true, false): (earlier: first, later: first)
+            case (false, true): (earlier: second, later: second)
+            default: (earlier: Swift.min(first, second), later: Swift.max(first, second))
+            }
         return switch firstValid || secondValid ? ambiguous : skipped {
         case .earlier: candidates.earlier
         case .later: candidates.later

@@ -64,7 +64,8 @@ struct `Time.Zone.Rule resolves offsets and local times` {
         #expect(throws: Time.Instant.Error.overflow) {
             try spring.instant(
                 local: Time.Instant(secondsSinceUnixEpoch: .max),
-                ambiguous: .earlier, skipped: .later
+                ambiguous: .earlier,
+                skipped: .later
             )
         }
     }

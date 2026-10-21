@@ -27,7 +27,8 @@ extension Time {
         private init(coordinate: Time.Coordinate) throws(Time.Instant.Error) {
             let attoseconds = coordinate.offset.attoseconds
             guard attoseconds % 1_000_000_000 == 0 else { throw .precision }
-            let seconds = attoseconds / 1_000_000_000_000_000_000
+            let seconds =
+                attoseconds / 1_000_000_000_000_000_000
                 - (attoseconds % 1_000_000_000_000_000_000 < 0 ? 1 : 0)
             guard Int64(exactly: seconds) != nil else { throw .overflow }
             self.coordinate = coordinate
@@ -53,7 +54,9 @@ extension Time.Instant {
     }
 
     public init(
-        _unchecked: Void, secondsSinceUnixEpoch: Int64, nanosecondFraction: Int32
+        _unchecked: Void,
+        secondsSinceUnixEpoch: Int64,
+        nanosecondFraction: Int32
     ) {
         precondition((0..<1_000_000_000).contains(nanosecondFraction))
         self.coordinate = Time.Coordinate(
@@ -106,8 +109,7 @@ extension Time.Instant {
     }
 
     public static func add(instant: Self, duration: Duration) -> Self {
-        do { return try instant.advanced(exactly: duration) }
-        catch { preconditionFailure("Instant addition requires representable exact nanoseconds") }
+        do { return try instant.advanced(exactly: duration) } catch { preconditionFailure("Instant addition requires representable exact nanoseconds") }
     }
 
     public static func subtract(duration: Duration, from instant: Self) -> Self {
@@ -125,8 +127,7 @@ extension Time.Instant {
     }
 
     public static func duration(from: Self, to: Self) -> Duration {
-        do { return try from.duration(exactlyTo: to) }
-        catch { preconditionFailure("The displacement does not fit Swift.Duration") }
+        do { return try from.duration(exactlyTo: to) } catch { preconditionFailure("The displacement does not fit Swift.Duration") }
     }
 
     public static func + (lhs: Self, rhs: Duration) -> Self { add(instant: lhs, duration: rhs) }
@@ -142,13 +143,15 @@ extension Time.Instant: Swift.Hashable {}
 
 extension Time.Instant {
     public static func + <Unit: Time.Unit>(
-        lhs: Time.Instant, rhs: Unit
+        lhs: Time.Instant,
+        rhs: Unit
     ) throws(Time.Instant.Error) -> Time.Instant {
         try lhs.advanced(by: rhs)
     }
 
     public static func - <Unit: Time.Unit>(
-        lhs: Time.Instant, rhs: Unit
+        lhs: Time.Instant,
+        rhs: Unit
     ) throws(Time.Instant.Error) -> Time.Instant {
         try lhs.advanced(by: -rhs)
     }

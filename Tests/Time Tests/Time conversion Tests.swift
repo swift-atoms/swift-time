@@ -2,8 +2,8 @@ import Cardinal
 import Difference
 import Magnitude
 import Polarity
-import Rational
 import Ratio
+import Rational
 import Testing
 import Time
 

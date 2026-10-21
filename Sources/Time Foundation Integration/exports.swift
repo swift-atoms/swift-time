@@ -1,2 +1,2 @@
-@_exported public import Time
 import Foundation
+@_exported public import Time

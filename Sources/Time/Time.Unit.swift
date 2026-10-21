@@ -1,9 +1,9 @@
 public import Cardinal
 public import Difference
-public import Rational
-public import Ratio
-public import Tagged
 internal import Polarity
+public import Ratio
+public import Rational
+public import Tagged
 
 extension Time {
     public protocol Unit {
@@ -52,7 +52,8 @@ extension Time.Unit {
 
 extension Time.Conversion {
     public static func ratio<From: Time.Unit, To: Time.Unit>(
-        from: From.Type, to: To.Type
+        from: From.Type,
+        to: To.Type
     ) throws(Time.Conversion.Error) -> Ratio<From, To> {
         let source = From.seconds
         let target = To.seconds
@@ -70,7 +71,8 @@ extension Time.Conversion {
     }
 
     public static func quantity<From: Time.Unit, To: Time.Unit>(
-        _ value: Time.Quantity<From>, to: To.Type
+        _ value: Time.Quantity<From>,
+        to: To.Type
     ) throws(Time.Conversion.Error) -> Time.Quantity<To> {
         let factor = try ratio(from: From.self, to: To.self)
         do throws(Ratio<From, To>.Error) {
@@ -79,7 +81,8 @@ extension Time.Conversion {
     }
 
     public static func count<From: Time.Unit, To: Time.Unit>(
-        _ value: Time.Count<From>, to: To.Type
+        _ value: Time.Count<From>,
+        to: To.Type
     ) throws(Time.Conversion.Error) -> Time.Count<To> {
         let factor = try ratio(from: From.self, to: To.self)
         do throws(Ratio<From, To>.Error) {
@@ -88,7 +91,8 @@ extension Time.Conversion {
     }
 
     public static func offset<From: Time.Unit, To: Time.Unit>(
-        _ value: Time.Offset<From>, to: To.Type
+        _ value: Time.Offset<From>,
+        to: To.Type
     ) throws(Time.Conversion.Error) -> Time.Offset<To> {
         let factor = try ratio(from: From.self, to: To.self)
         do throws(Ratio<From, To>.Error) {
@@ -99,10 +103,10 @@ extension Time.Conversion {
 
 extension Time.Conversion {
     static func scale<From, To>(
-        numerator: UInt128, denominator: UInt128 = 1
+        numerator: UInt128,
+        denominator: UInt128 = 1
     ) -> Ratio<From, To> {
-        do { return try Ratio(numerator: numerator, denominator: denominator) }
-        catch { preconditionFailure("The temporal unit scale is representable") }
+        do { return try Ratio(numerator: numerator, denominator: denominator) } catch { preconditionFailure("The temporal unit scale is representable") }
     }
 }
 
@@ -111,13 +115,13 @@ extension Time.Unit {
 }
 
 #if !hasFeature(Embedded)
-extension Time.Unit {
-    public init(from decoder: any Decoder) throws {
-        self.init(try Rational(from: decoder))
-    }
+    extension Time.Unit {
+        public init(from decoder: any Decoder) throws {
+            self.init(try Rational(from: decoder))
+        }
 
-    public func encode(to encoder: any Encoder) throws {
-        try value.encode(to: encoder)
+        public func encode(to encoder: any Encoder) throws {
+            try value.encode(to: encoder)
+        }
     }
-}
 #endif

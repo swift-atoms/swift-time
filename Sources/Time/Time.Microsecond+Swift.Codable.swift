@@ -1,3 +1,3 @@
 #if !hasFeature(Embedded)
-extension Time.Microsecond: Swift.Codable {}
+    extension Time.Microsecond: Swift.Codable {}
 #endif

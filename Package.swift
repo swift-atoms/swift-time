@@ -17,7 +17,7 @@ let package = Package(
         .library(name: "Time Test Support", targets: ["Time Test Support"]),
     ],
     traits: [
-        .trait(name: "Affine", description: "Affine integration"),
+        .trait(name: "Affine", description: "Affine integration")
     ],
     dependencies: [
         .package(url: "https://github.com/swift-atoms/swift-affine.git", branch: "main", traits: [.trait(name: "Tagged", condition: .when(traits: ["Affine"]))]),
@@ -34,10 +34,14 @@ let package = Package(
         .package(url: "https://github.com/swift-atoms/swift-tagged.git", branch: "main"),
     ],
     targets: [
-        .testTarget(name: "Time Affine Tests", dependencies: [
+        .testTarget(
+            name: "Time Affine Tests",
+            dependencies: [
                 .target(name: "Time"),
-                .product(name: "Affine", package: "swift-affine", condition: .when(traits: ["Affine"]))
-            ], path: "Tests/Time Affine Tests"),
+                .product(name: "Affine", package: "swift-affine", condition: .when(traits: ["Affine"])),
+            ],
+            path: "Tests/Time Affine Tests"
+        ),
         .target(
             name: "Time",
             dependencies: [
@@ -60,14 +64,14 @@ let package = Package(
         .target(
             name: "Time Foundation Integration",
             dependencies: [
-                .target(name: "Time"),
+                .target(name: "Time")
             ],
             path: "Sources/Time Foundation Integration"
         ),
         .target(
             name: "Time Test Support",
             dependencies: [
-                .target(name: "Time"),
+                .target(name: "Time")
             ],
             path: "Tests/Support"
         ),
