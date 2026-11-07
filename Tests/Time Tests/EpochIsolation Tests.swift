@@ -26,31 +26,35 @@ private func makeLocalEpoch() -> sending Time.Epoch<LocalReference> {
 
 private func requireSendable<T: Sendable>(_ value: T) {}
 
-@Suite struct `Epochs retain their reference ownership` {
-    @Test func `local construction does not require transfer or conformances`() {
-        let reference = LocalReference(1)
-        let epoch = Time.Epoch(referenceDate: reference)
-        reference.value = 2
-        #expect(epoch.referenceDate === reference)
-        #expect(epoch.referenceDate.value == 2)
-    }
+enum `EpochIsolation Tests` {}
 
-    @Test func `equality is independent of hashability`() {
-        let a = Time.Epoch(referenceDate: EqualityOnly(value: 1))
-        let b = Time.Epoch(referenceDate: EqualityOnly(value: 1))
-        #expect(a == b)
-    }
+extension `EpochIsolation Tests` {
+    @Suite struct `Epochs retain their reference ownership` {
+        @Test func `local construction does not require transfer or conformances`() {
+            let reference = LocalReference(1)
+            let epoch = Time.Epoch(referenceDate: reference)
+            reference.value = 2
+            #expect(epoch.referenceDate === reference)
+            #expect(epoch.referenceDate.value == 2)
+        }
 
-    @Test func `conditional conformances remain available`() {
-        let epoch = Time.Epoch(referenceDate: Time.Instant(secondsSinceUnixEpoch: 0))
-        requireSendable(epoch)
-        #expect(Set([epoch, epoch]).count == 1)
-    }
+        @Test func `equality is independent of hashability`() {
+            let a = Time.Epoch(referenceDate: EqualityOnly(value: 1))
+            let b = Time.Epoch(referenceDate: EqualityOnly(value: 1))
+            #expect(a == b)
+        }
 
-    @Test func `disconnected non sendable reference can be sent to an actor`() async {
-        let receiver = EpochReceiver()
-        let epoch = makeLocalEpoch()
-        await receiver.store(epoch)
-        #expect(await receiver.value() == 42)
+        @Test func `conditional conformances remain available`() {
+            let epoch = Time.Epoch(referenceDate: Time.Instant(secondsSinceUnixEpoch: 0))
+            requireSendable(epoch)
+            #expect(Set([epoch, epoch]).count == 1)
+        }
+
+        @Test func `disconnected non sendable reference can be sent to an actor`() async {
+            let receiver = EpochReceiver()
+            let epoch = makeLocalEpoch()
+            await receiver.store(epoch)
+            #expect(await receiver.value() == 42)
+        }
     }
 }
