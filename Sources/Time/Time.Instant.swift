@@ -2,15 +2,8 @@ public import Coordinate
 internal import Rational
 
 extension Time {
-
     public struct Instant {
         private let coordinate: Time.Coordinate
-
-        public var position: Coordinate::Coordinate<1, Int64> {
-            Coordinate::Coordinate(rawValue: secondsSinceUnixEpoch)
-        }
-
-        public var nanosecondFraction: Int32 { components.nanoseconds }
 
         public init(
             secondsSinceUnixEpoch: Int64,
@@ -33,16 +26,24 @@ extension Time {
             guard Int64(exactly: seconds) != nil else { throw .overflow }
             self.coordinate = coordinate
         }
+    }
+}
 
-        private var components: (seconds: Int64, nanoseconds: Int32) {
-            let nanoseconds = coordinate.offset.attoseconds / 1_000_000_000
-            let remainder = nanoseconds % 1_000_000_000
-            let seconds = nanoseconds / 1_000_000_000 - (remainder < 0 ? 1 : 0)
-            return (
-                Int64(seconds),
-                Int32(remainder < 0 ? remainder + 1_000_000_000 : remainder)
-            )
-        }
+extension Time.Instant {
+    public var position: Coordinate::Coordinate<1, Int64> {
+        Coordinate::Coordinate(rawValue: secondsSinceUnixEpoch)
+    }
+
+    public var nanosecondFraction: Int32 { components.nanoseconds }
+
+    private var components: (seconds: Int64, nanoseconds: Int32) {
+        let nanoseconds = coordinate.offset.attoseconds / 1_000_000_000
+        let remainder = nanoseconds % 1_000_000_000
+        let seconds = nanoseconds / 1_000_000_000 - (remainder < 0 ? 1 : 0)
+        return (
+            Int64(seconds),
+            Int32(remainder < 0 ? remainder + 1_000_000_000 : remainder)
+        )
     }
 }
 
@@ -73,7 +74,6 @@ extension Time.Instant {
 
 extension Time.Instant {
     public func displacement(to other: Self) -> Time.Nanosecond {
-
         Time.Nanosecond((other.coordinate.offset - coordinate.offset).attoseconds / 1_000_000_000)
     }
 
@@ -104,7 +104,6 @@ extension Time.Instant {
     }
 
     public func duration(exactlyTo other: Self) throws(Time.Instant.Error) -> Duration {
-
         other.coordinate.offset - coordinate.offset
     }
 
@@ -158,7 +157,6 @@ extension Time.Instant {
 }
 
 extension Time.Instant {
-
     @inlinable
     public static func milliseconds(from duration: Duration?) -> CInt {
         guard let duration else { return -1 }
