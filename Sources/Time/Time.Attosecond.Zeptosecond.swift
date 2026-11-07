@@ -38,3 +38,5 @@ extension Time.Attosecond.Zeptosecond: Swift.Sendable {}
 extension Time.Attosecond.Zeptosecond: Swift.Equatable {}
 
 extension Time.Attosecond.Zeptosecond: Swift.Hashable {}
+
+extension Time.Attosecond.Zeptosecond: Swift.Comparable {}

@@ -38,3 +38,5 @@ extension Time.Microsecond.Nanosecond: Swift.Sendable {}
 extension Time.Microsecond.Nanosecond: Swift.Equatable {}
 
 extension Time.Microsecond.Nanosecond: Swift.Hashable {}
+
+extension Time.Microsecond.Nanosecond: Swift.Comparable {}

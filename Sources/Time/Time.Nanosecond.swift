@@ -13,3 +13,9 @@ extension Time.Nanosecond: Swift.Equatable {}
 extension Time.Nanosecond: Swift.Hashable {}
 
 extension Time.Nanosecond: Swift.Sendable {}
+
+#if !hasFeature(Embedded)
+    extension Time.Nanosecond: Swift.Codable {}
+#endif
+
+extension Time.Nanosecond: Swift.Comparable {}

@@ -13,3 +13,9 @@ extension Time.Second: Swift.Equatable {}
 extension Time.Second: Swift.Hashable {}
 
 extension Time.Second: Swift.Sendable {}
+
+#if !hasFeature(Embedded)
+    extension Time.Second: Swift.Codable {}
+#endif
+
+extension Time.Second: Swift.Comparable {}

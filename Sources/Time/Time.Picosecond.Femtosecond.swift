@@ -38,3 +38,5 @@ extension Time.Picosecond.Femtosecond: Swift.Sendable {}
 extension Time.Picosecond.Femtosecond: Swift.Equatable {}
 
 extension Time.Picosecond.Femtosecond: Swift.Hashable {}
+
+extension Time.Picosecond.Femtosecond: Swift.Comparable {}

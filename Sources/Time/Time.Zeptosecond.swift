@@ -13,3 +13,9 @@ extension Time.Zeptosecond: Swift.Equatable {}
 extension Time.Zeptosecond: Swift.Hashable {}
 
 extension Time.Zeptosecond: Swift.Sendable {}
+
+#if !hasFeature(Embedded)
+    extension Time.Zeptosecond: Swift.Codable {}
+#endif
+
+extension Time.Zeptosecond: Swift.Comparable {}

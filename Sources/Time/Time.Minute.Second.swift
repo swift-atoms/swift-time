@@ -38,3 +38,5 @@ extension Time.Minute.Second: Swift.Sendable {}
 extension Time.Minute.Second: Swift.Equatable {}
 
 extension Time.Minute.Second: Swift.Hashable {}
+
+extension Time.Minute.Second: Swift.Comparable {}

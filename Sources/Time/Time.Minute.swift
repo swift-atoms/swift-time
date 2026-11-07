@@ -13,3 +13,9 @@ extension Time.Minute: Swift.Equatable {}
 extension Time.Minute: Swift.Hashable {}
 
 extension Time.Minute: Swift.Sendable {}
+
+#if !hasFeature(Embedded)
+    extension Time.Minute: Swift.Codable {}
+#endif
+
+extension Time.Minute: Swift.Comparable {}
