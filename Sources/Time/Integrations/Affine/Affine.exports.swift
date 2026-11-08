@@ -1,4 +1,4 @@
 #if Affine
-    @_exported public import Affine
-    @_exported public import Tagged
+    public import Affine
+    public import Tagged
 #endif
