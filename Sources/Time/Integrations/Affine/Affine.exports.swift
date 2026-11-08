@@ -1,4 +1,4 @@
 #if Affine
-    public import Affine
-    public import Tagged
+    import Affine
+    import Tagged
 #endif
