@@ -2,9 +2,9 @@
     import Testing
     import Time
 
-enum `Time.Coordinate Affine Tests` {}
+    enum `Time.Coordinate Affine Tests` {}
 
-extension `Time.Coordinate Affine Tests` {
+    extension `Time.Coordinate Affine Tests` {
         @Suite struct `Temporal affine operations preserve exact duration semantics` {
             @Test(arguments: [Int128.min, Int128.min + 1, -1_000_000_001, -1, 0, 1, Int128.max])
             func `Translation and difference preserve the native range`(attoseconds: Int128) throws {
@@ -61,5 +61,5 @@ extension `Time.Coordinate Affine Tests` {
                 }
             }
         }
-}
+    }
 #endif
