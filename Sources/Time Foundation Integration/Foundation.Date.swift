@@ -1,12 +1,14 @@
-public import Foundation
-public import Time
+#if !hasFeature(Embedded)
+    public import Foundation
+    public import Time
 
-extension Foundation.Date {
+    extension Foundation.Date {
 
-    public init(_ instant: Time.Instant) {
-        self.init(
-            timeIntervalSince1970: Double(instant.secondsSinceUnixEpoch)
-                + Double(instant.nanosecondFraction) / 1_000_000_000
-        )
+        public init(_ instant: Time.Instant) {
+            self.init(
+                timeIntervalSince1970: Double(instant.secondsSinceUnixEpoch)
+                    + Double(instant.nanosecondFraction) / 1_000_000_000
+            )
+        }
     }
-}
+#endif
