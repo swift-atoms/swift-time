@@ -149,3 +149,23 @@ extension `Time conversion Tests` {
         }
     }
 }
+
+extension `Time conversion Tests` {
+    @Suite struct `Clock seconds have uniform days` {
+        @Test func `a second of the minute rejects the leap second 60`() throws {
+            #expect(throws: Time.Minute.Second.Error.invalidSecond(60)) {
+                try Time.Minute.Second(60)
+            }
+            #expect(try Time.Minute.Second(59).value == 59)
+        }
+
+        @Test func `the last second of a day precedes the next midnight`() throws {
+            let last = Time.Conversion.seconds(
+                hour: try Time.Day.Hour(23),
+                minute: try Time.Hour.Minute(59),
+                second: try Time.Minute.Second(59)
+            )
+            #expect(last == Time.Conversion.secondsPerDay - 1)
+        }
+    }
+}

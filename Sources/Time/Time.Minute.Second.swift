@@ -5,7 +5,7 @@ extension Time.Minute {
         public let value: Int
 
         public init(_ value: Int) throws(Time.Minute.Second.Error) {
-            guard (0...60).contains(value) else {
+            guard (0...59).contains(value) else {
                 throw Error.invalidSecond(value)
             }
             self.value = value
