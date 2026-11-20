@@ -1,11 +1,43 @@
 internal import Cardinal
 public import Difference
-import Magnitude
-import Polarity
-import Tagged
-public import Translation
+internal import Magnitude
+internal import Polarity
+internal import Tagged
 
-extension Translation where Displacement == Time.Second.Offset {
+extension Time {
+    public struct Zone {
+        public let offset: Time.Second.Offset
+
+        public init(offset: Time.Second.Offset) {
+            self.offset = offset
+        }
+    }
+}
+
+extension Time.Zone: Swift.Equatable {}
+extension Time.Zone: Swift.Hashable {}
+extension Time.Zone: Swift.Sendable {}
+extension Time.Zone: Swift.CustomStringConvertible {}
+
+#if !hasFeature(Embedded)
+    extension Time.Zone: Swift.Codable {}
+#endif
+
+extension Time.Zone {
+    public init(by displacement: Time.Second.Offset) {
+        self.init(offset: displacement)
+    }
+
+    public init(hours: Int, minutes: Int = 0) throws(Difference.Error) {
+        self = try Self.hours(hours, minutes: minutes)
+    }
+
+    public init(seconds: Int) {
+        self = Self.seconds(seconds)
+    }
+}
+
+extension Time.Zone {
     public static var identity: Self { Self(offset: Time.Second.offset(.zero)) }
 
     public func inverted() -> Self {
@@ -69,15 +101,5 @@ extension Translation where Displacement == Time.Second.Offset {
         let sign = value.polarity == .negative ? "-" : "+"
         let base = "\(sign)\(padded(hours)):\(padded(minutes))"
         return seconds == 0 ? base : "\(base):\(padded(seconds))"
-    }
-}
-
-extension Translation where Displacement == Time.Second.Offset {
-    public init(hours: Int, minutes: Int = 0) throws(Difference.Error) {
-        self = try Self.hours(hours, minutes: minutes)
-    }
-
-    public init(seconds: Int) {
-        self = Self.seconds(seconds)
     }
 }

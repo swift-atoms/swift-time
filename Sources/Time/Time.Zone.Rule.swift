@@ -2,10 +2,8 @@ internal import Cardinal
 internal import Magnitude
 internal import Polarity
 internal import Tagged
-public import Translation
 
-extension Translation where Displacement == Time.Second.Offset {
-
+extension Time.Zone {
     public struct Rule {
         private let resolve: @Sendable (Time.Instant) -> Time.Zone
 

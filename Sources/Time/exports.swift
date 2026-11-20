@@ -8,7 +8,6 @@
 @_exported public import Ratio
 @_exported public import Rational
 @_exported public import Tagged
-@_exported public import Translation
 
 #if Affine
     @_exported public import Affine
