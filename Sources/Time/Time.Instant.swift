@@ -93,25 +93,25 @@ extension Time.Instant {
         }
         let attoseconds = nanoseconds.multipliedReportingOverflow(by: 1_000_000_000)
         guard !attoseconds.overflow else { throw .overflow }
-        return try advanced(exactly: Duration(attoseconds: attoseconds.partialValue))
+        return try advanced(exactly: Swift.Duration(attoseconds: attoseconds.partialValue))
     }
 
-    public func advanced(exactly duration: Duration) throws(Time.Instant.Error) -> Self {
+    public func advanced(exactly duration: Swift.Duration) throws(Time.Instant.Error) -> Self {
         guard duration.attoseconds % 1_000_000_000 == 0 else { throw .precision }
         let result = coordinate.offset.attoseconds.addingReportingOverflow(duration.attoseconds)
         guard !result.overflow else { throw .overflow }
         return try Self(coordinate: Time.Coordinate(offset: .init(attoseconds: result.partialValue)))
     }
 
-    public func duration(exactlyTo other: Self) throws(Time.Instant.Error) -> Duration {
+    public func duration(exactlyTo other: Self) throws(Time.Instant.Error) -> Swift.Duration {
         other.coordinate.offset - coordinate.offset
     }
 
-    public static func add(instant: Self, duration: Duration) -> Self {
+    public static func add(instant: Self, duration: Swift.Duration) -> Self {
         do { return try instant.advanced(exactly: duration) } catch { preconditionFailure("Instant addition requires representable exact nanoseconds") }
     }
 
-    public static func subtract(duration: Duration, from instant: Self) -> Self {
+    public static func subtract(duration: Swift.Duration, from instant: Self) -> Self {
         precondition(
             duration.attoseconds % 1_000_000_000 == 0,
             "Instant arithmetic requires exact nanoseconds"
@@ -125,13 +125,13 @@ extension Time.Instant {
         }
     }
 
-    public static func duration(from: Self, to: Self) -> Duration {
+    public static func duration(from: Self, to: Self) -> Swift.Duration {
         do { return try from.duration(exactlyTo: to) } catch { preconditionFailure("The displacement does not fit Swift.Duration") }
     }
 
-    public static func + (lhs: Self, rhs: Duration) -> Self { add(instant: lhs, duration: rhs) }
-    public static func - (lhs: Self, rhs: Duration) -> Self { subtract(duration: rhs, from: lhs) }
-    public static func - (lhs: Self, rhs: Self) -> Duration { duration(from: rhs, to: lhs) }
+    public static func + (lhs: Self, rhs: Swift.Duration) -> Self { add(instant: lhs, duration: rhs) }
+    public static func - (lhs: Self, rhs: Swift.Duration) -> Self { subtract(duration: rhs, from: lhs) }
+    public static func - (lhs: Self, rhs: Self) -> Swift.Duration { duration(from: rhs, to: lhs) }
 }
 
 extension Time.Instant: Swift.Sendable {}
@@ -158,7 +158,7 @@ extension Time.Instant {
 
 extension Time.Instant {
     @inlinable
-    public static func milliseconds(from duration: Duration?) -> CInt {
+    public static func milliseconds(from duration: Swift.Duration?) -> CInt {
         guard let duration else { return -1 }
         let ms = duration.attoseconds / 1_000_000_000_000_000
         return CInt(clamping: ms)

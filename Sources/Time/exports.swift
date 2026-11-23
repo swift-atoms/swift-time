@@ -13,3 +13,4 @@
     @_exported public import Affine
     @_exported public import Tagged
 #endif
+@_exported public import Quantity

@@ -31,6 +31,7 @@ let package = Package(
         .package(url: "https://github.com/swift-atoms/swift-rational.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-ratio.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-tagged.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-quantity.git", branch: "main"),
     ],
     targets: [
         .testTarget(
@@ -55,6 +56,7 @@ let package = Package(
                 .product(name: "Rational", package: "swift-rational"),
                 .product(name: "Ratio", package: "swift-ratio"),
                 .product(name: "Tagged", package: "swift-tagged"),
+                .product(name: "Quantity", package: "swift-quantity"),
             ],
             path: "Sources/Time"
         ),

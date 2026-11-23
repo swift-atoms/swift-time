@@ -4,6 +4,8 @@ Use the `Time` module when you need a wall-clock moment measured from the Unix e
 
 ## Laws
 
+- `Time.Duration` is the time of physics, a kind of quantity of swift-quantity: an amount is a `Time.Duration.Value<Scalar>` in seconds, made with `Time.Duration.seconds(_:)`, of dimension time to the first power. An exact `Swift.Duration` converts to it, rounded to the nearest the scalar holds.
+
 - `Time.Instant` has nanosecond resolution and spans exactly the `Int64` range of seconds since the Unix epoch. The seconds are floored and the fraction always lies in `0..<1_000_000_000`, so one nanosecond before the epoch is second `-1` with fraction `999_999_999`.
 - Advancing a `Time.Instant` never rounds. A displacement that is not a whole number of nanoseconds throws `.precision`, and leaving the `Int64` seconds range throws `.overflow`. The non-throwing forms (`+`, `-`, `Swift.InstantProtocol`, `Time.Epoch.instant(after:)` with a `Swift.Duration`) trap on the same conditions.
 - `Time.Coordinate` is the attosecond-exact point behind `Time.Instant` and covers the whole `Swift.Duration` range. With the `Affine` trait, `Time.Coordinate.temporal` translates and measures without quantizing, and throws `.overflow` instead of wrapping.
