@@ -5,6 +5,7 @@
 @_exported public import Division
 @_exported public import Magnitude
 @_exported public import Polarity
+@_exported public import Quantity
 @_exported public import Ratio
 @_exported public import Rational
 @_exported public import Tagged
@@ -13,4 +14,3 @@
     @_exported public import Affine
     @_exported public import Tagged
 #endif
-@_exported public import Quantity
